@@ -19,11 +19,12 @@ from nemo.utils import logging
 __all__ = ["SGDDataProcessor"]
 
 DATASET_NAMES = {
-    "train_dev": {"train": ["train_"], "dev": ["dev"]},
+    "train_dev": {"train": ["train_"], "dev": ["dev_"]},
     "train": {"train": ["train", "dev"]},
     "test_seen": {"train": ["train", "dev"], "test": ["test_seen"]},
     "test_unseen": {"train": ["train", "dev"], "test": ["test_unseen"]},
 }
+#TODO
 
 
 class SGDDataProcessor(object):
@@ -77,13 +78,13 @@ class SGDDataProcessor(object):
             dial_file = os.path.join(dialogues_example_dir, dial_file)
             self.dial_files[(task_name, dataset_split)] = dial_file
             # Process id files
-            id_file = f"{task_name}_{dataset_split}_ids"
+            id_file = f"{task_name}_{dataset_split}_ids.pkl"
             id_file = os.path.join(dialogues_example_dir, id_file)
             self.id_files[(task_name, dataset_split)] = id_file
 
 
             dialog_paths = self.get_dialogue_files(data_dir, task_name, dataset_split)
-            dialogs = self.load_dialogues(dialog_paths) # TODO
+            dialogs = self.load_dialogues(dialog_paths)
             self.dialogs[(task_name, dataset_split)] = dialogs
             for dialog in dialogs:
                 self._seen_services[dataset_split].update(set(dialog["services"]))
@@ -197,7 +198,6 @@ class SGDDataProcessor(object):
         dialog_ids = []
         slot_carryover_candlist = collections.defaultdict(int)
         for dialog_idx, dialog in enumerate(dialogs):
-            print(dialog["dialogue_id"])
             if dialog_idx % 1000 == 0:
                 logging.info(f'Processed {dialog_idx} dialogues.')
             examples.extend(
@@ -294,7 +294,7 @@ class SGDDataProcessor(object):
 
     def _create_examples_from_turn(
         self,
-        turn_id: int,
+        turn_id: str,
         system_utterance: str,
         user_utterance: str,
         system_frames: dict,
@@ -327,7 +327,6 @@ class SGDDataProcessor(object):
         examples = []
         slot_carryover_values = collections.defaultdict(list)
         for service, user_frame in user_frames.items():
-
             base_example = InputExample(schema_config=self.schema_config, tokenizer=self._tokenizer,)
             base_example.service_schema = schemas.get_service_schema(service)
             base_example.service_id = schemas.get_service_schema(service).service_id
@@ -345,10 +344,11 @@ class SGDDataProcessor(object):
             ]
 
             for model_task in range(self.schema_config["NUM_TASKS"]):
-                if model_task == 0:
+                if model_task == 0: # 0: Intent classification
                     for intent_id, intent in enumerate(schemas.get_service_schema(service).intents):
                         task_example = base_example.make_copy()
                         task_example.task_mask[model_task] = 1
+                        # assert task_example.task_mask == [1, 0, 0, 0, 0, 0]
                         task_example.intent_id = intent_id
                         task_example.example_id += f"-{model_task}-{intent_id}-0"
                         task_example.example_id_num.extend([model_task, intent_id, 0])
@@ -367,10 +367,11 @@ class SGDDataProcessor(object):
                         task_example.add_intents(user_frame)
                         examples.append(task_example)
 
-                if model_task == 1:
+                if model_task == 1: # 1: Requested slot classification
                     for slot_id, slot in enumerate(schemas.get_service_schema(service).slots):
                         task_example = base_example.make_copy()
                         task_example.task_mask[model_task] = 1
+                        # assert task_example.task_mask == [0, 1, 0, 0, 0, 0]
                         task_example.requested_slot_id = slot_id
                         task_example.example_id += f"-{model_task}-{slot_id}-0"
                         task_example.example_id_num.extend([model_task, slot_id, 0])
@@ -386,13 +387,12 @@ class SGDDataProcessor(object):
                         )
                         task_example.add_requested_slots(user_frame)
                         examples.append(task_example)
-                if model_task == 2:
+                if model_task == 2: # 2: Cat-slot status classification; 3: Cat-slot value classification
                     off_slots = []
                     on_slots = []
                     for slot_id, slot in enumerate(schemas.get_service_schema(service).categorical_slots):
                         task_example = base_example.make_copy()
                         task_example.task_mask[model_task] = 1
-
                         # assert task_example.task_mask == [0, 0, 1, 0, 0, 0]
                         task_example.categorical_slot_id = slot_id
                         task_example.example_id += f"-{model_task}-{slot_id}-0"
@@ -408,9 +408,9 @@ class SGDDataProcessor(object):
                             system_user_utterance,
                         )
                         task_example.add_categorical_slots(state_update)
-                        if task_example.categorical_slot_status == 0:
+                        if task_example.categorical_slot_status == 0: # STATUS_OFF
                             off_slots.append(task_example)
-                        else:
+                        else: # STATUS_ACTIVE or STATUS_DONTCARE
                             on_slots.append(task_example)
                             examples.append(task_example)
                         old_example = task_example
@@ -418,7 +418,7 @@ class SGDDataProcessor(object):
                         for value_id, value in enumerate(
                             schemas.get_service_schema(service).get_categorical_slot_values(slot)
                         ):
-                            if dataset_split != 'train' or task_example.categorical_slot_status == 1:
+                            if dataset_split != "train" or task_example.categorical_slot_status == 1:
                                 task_example = old_example.make_copy_of_categorical_features()
                                 task_example.task_mask[3] = 1
                                 # assert task_example.task_mask == [0, 0, 0, 1, 0, 0]
@@ -440,7 +440,7 @@ class SGDDataProcessor(object):
                                 assert task_example.categorical_slot_status == old_example.categorical_slot_status
                                 examples.append(task_example)
 
-                    if dataset_split == 'train' and subsample:
+                    if dataset_split == "train" and subsample:
                         num_on_slots = len(on_slots)
                         examples.extend(
                             np.random.choice(off_slots, replace=False, size=min(max(num_on_slots, 1), len(off_slots)))
@@ -448,7 +448,7 @@ class SGDDataProcessor(object):
                     else:
                         examples.extend(off_slots)
 
-                if model_task == 4:  # noncat slot status
+                if model_task == 4:  # 4: Noncat-slot status classification; 5: Noncat-slot value span extraction
                     off_slots = []
                     on_slots = []
                     for slot_id, slot in enumerate(schemas.get_service_schema(service).non_categorical_slots):
@@ -468,15 +468,17 @@ class SGDDataProcessor(object):
                             slot_description,
                             system_user_utterance,
                         )
-
-                        user_span_boundaries = self._find_subword_indices(
-                            state_update,
-                            user_utterance,
-                            user_frame["slots"],
-                            user_alignments,
-                            user_tokens,
-                            2 + len(slot_tokens) + len(system_tokens),
-                        )
+                        try: #TODO
+                            user_span_boundaries = self._find_subword_indices(
+                                state_update,
+                                user_utterance,
+                                user_frame["slots"],
+                                user_alignments,
+                                user_tokens,
+                                2 + len(slot_tokens) + len(system_tokens),
+                            )
+                        except:
+                            continue
                         if system_frame is not None:
                             system_span_boundaries = self._find_subword_indices(
                                 state_update,
@@ -554,7 +556,7 @@ class SGDDataProcessor(object):
             value_char_spans = {}
             for slot_span in char_slot_spans:
                 if slot_span["slot"] == slot:
-                    value = utterance[slot_span["start"] : slot_span["exclusive_end"]]
+                    value = utterance[slot_span["start"]: slot_span["exclusive_end"]]
                     start_tok_idx = alignments[slot_span["start"]]
                     end_tok_idx = alignments[slot_span["exclusive_end"] - 1]
                     if 0 <= start_tok_idx < len(subwords):

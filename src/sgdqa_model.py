@@ -26,7 +26,7 @@ from omegaconf import DictConfig, OmegaConf
 from pytorch_lightning import Trainer
 from torch.utils.data import DataLoader
 
-from nemo.collections.nlp.data.dialogue_state_tracking import Schema, SGDDataset
+from nemo.collections.nlp.data.dialogue_state_tracking import Schema
 from nemo.collections.nlp.data.dialogue_state_tracking.sgd.evaluate import evaluate, get_in_domain_services
 from nemo.collections.nlp.data.dialogue_state_tracking.sgd.prediction_utils import write_predictions_to_file
 from nemo.collections.nlp.losses import SGDDialogueStateLoss
@@ -38,7 +38,7 @@ from nemo.core.classes.common import PretrainedModelInfo, typecheck
 from nemo.core.neural_types import NeuralType
 from nemo.utils.get_rank import is_global_rank_zero
 
-from data_utils import SGDDataProcessor
+from data_utils import SGDDataProcessor, SGDDataset
 
 __all__ = ['SGDQAModel']
 
@@ -388,7 +388,7 @@ class SGDQAModel(NLPModel):
             metrics: metrics collection
         """
 
-        def get_str_example_id(split: str, ids_to_service_names_dict: dict, example_id_num: torch.Tensor) -> str:
+        def get_str_example_id(dataset: SGDDataset, ids_to_service_names_dict: dict, example_id_num: torch.Tensor) -> str:
             """
             Constructs string representation of example ID
             Args:
@@ -398,11 +398,10 @@ class SGDQAModel(NLPModel):
             """
 
             def format_turn_id(ex_id_num):
-                dialog_id_1, dialog_id_2, turn_id, service_id, model_task_id, slot_intent_id, value_id = ex_id_num
-                return "{}-{}_{:05d}-{:02d}-{}-{}-{}-{}".format(
-                    split,
-                    dialog_id_1,
-                    dialog_id_2,
+                dialog_idx, turn_id, service_id, model_task_id, slot_intent_id, value_id = ex_id_num
+                return "{}-{}-{:02d}-{}-{}-{}-{}".format(
+                    dataset.split,
+                    dataset.str_ids[dialog_idx],
                     turn_id,
                     ids_to_service_names_dict[service_id],
                     model_task_id,
@@ -450,6 +449,7 @@ class SGDQAModel(NLPModel):
 
         ids_to_service_names_dict = self.dialogues_processor.schemas._services_id_to_vocab
         example_id = get_str_example_id(dataloader.dataset, ids_to_service_names_dict, example_id_num)
+        # TODO
 
         metrics = {}
         try:

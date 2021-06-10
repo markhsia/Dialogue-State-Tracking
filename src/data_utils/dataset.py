@@ -42,6 +42,7 @@ class SGDDataset(Dataset):
             dataset_split: dataset split
             dialogues_processor: Data generator for SGD dialogues
         """
+        self.split = dataset_split
         self.features, self.str_ids = dialogues_processor.get_dialog_examples(dataset_split)
 
     def __len__(self):
