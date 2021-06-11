@@ -15,12 +15,13 @@
 
 pretrained_model: null # pretrained QAModel model from list_available_models()
 do_training: true # training mode, for testing change to false
+seed: 1114
 trainer:
-  gpus: 3 # number of GPUs (0 for CPU), or list of the GPUs to use e.g. [0, 1]
+  gpus: 2 # number of GPUs (0 for CPU), or list of the GPUs to use e.g. [0, 1]
   num_nodes: 1
   max_epochs: 3
   max_steps: null # precedence over max_epochs
-  accumulate_grad_batches: 1 # accumulates grads every k batches
+  accumulate_grad_batches: 8 # accumulates grads every k batches
   gradient_clip_val: 1.0
   amp_level: O1 # O1/O2 for mixed precision
   precision: 16 # Should be set to 16 for O1 and O2 to enable the AMP.
@@ -31,6 +32,7 @@ trainer:
   num_sanity_val_steps: 0 # number of steps to perform validation steps for sanity check the validation process before starting the training, setting to 0 disables it
   checkpoint_callback: False  # Provided by exp_manager
   logger: False  # Provided by exp_manager
+  deterministic: true
 
 model:
   nemo_path: null # filename to save the model and associated artifacts to .nemo file
@@ -51,42 +53,42 @@ model:
 
   dataset:
     max_seq_length: 128 # the maximum length BERT supports is 512
-    max_num_cat_slot: 6 # maximum number of different categorical slots per service in dataset 
-    max_num_noncat_slot: 12 # maximum number of different non-categorical slots per service in dataset 
-    max_value_per_cat_slot: 12 # maximum number of different categorical slot values per service in dataset 
+    max_num_cat_slot: 9 # maximum number of different categorical slots per service in dataset 
+    max_num_noncat_slot: 11 # maximum number of different non-categorical slots per service in dataset 
+    max_value_per_cat_slot: 13 # maximum number of different categorical slot values per service in dataset 
     max_num_intent: 4 # maximum number of different intents per service in dataset 
-    task_name: ??? # or from [sgd_all, sgd_all_single, sgd_multi_domain, debug_sample]
+    task_name: ???
     state_tracker: nemotracker # or baseline
     data_dir: ???
-    dialogues_example_dir: "./dialogue_examples" # cache location to store or load preprocessed data from. To use cache, specify `use_cache`
-    subsample: false # balances negative and positive training examples for improved performance
+    dialogues_example_dir: "./dial_ex" # cache location to store or load preprocessed data from. To use cache, specify `use_cache`
+    subsample: true # balances negative and positive training examples for improved performance
     use_cache: false # uses a cache to store the processed dataset, you may use it for large datasets for speed up
-    use_fuzzy_match: true # Whether to use fuzzy string matching when comparing non-categorical slot values. Should be set to False when conducting multiwoz style evaluation.
+    use_fuzzy_match: false # Whether to use fuzzy string matching when comparing non-categorical slot values. Should be set to False when conducting multiwoz style evaluation.
     joint_acc_across_turn: true # Whether to compute joint goal accuracy across turn instead of across service. Should be set to True when conducting multiwoz style evaluation.
 
   train_ds:
     ds_item: "train"
-    batch_size: 128
+    batch_size: 64 # Per device
     shuffle: true
-    num_workers: 3
+    num_workers: 4
     drop_last: false
     pin_memory: false
 
   validation_ds:
     ds_item: ["dev"]
-    batch_size: 8
+    batch_size: 32
     shuffle: false
-    num_workers: 3
+    num_workers: 4
     drop_last: false
     pin_memory: false
   
-  #test_ds:
-    #ds_item: "test"
-    #batch_size: 8
-    #shuffle: false
-    #num_workers: 3
-    #drop_last: false
-    #pin_memory: false
+  test_ds:
+    ds_item: ["test"]
+    batch_size: 32
+    shuffle: false
+    num_workers: 4
+    drop_last: false
+    pin_memory: false
 
 
   optim:

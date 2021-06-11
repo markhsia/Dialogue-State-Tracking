@@ -27,7 +27,6 @@ from pytorch_lightning import Trainer
 from torch.utils.data import DataLoader
 
 from nemo.collections.nlp.data.dialogue_state_tracking import Schema
-from nemo.collections.nlp.data.dialogue_state_tracking.sgd.evaluate import evaluate, get_in_domain_services
 from nemo.collections.nlp.data.dialogue_state_tracking.sgd.prediction_utils import write_predictions_to_file
 from nemo.collections.nlp.losses import SGDDialogueStateLoss
 from nemo.collections.nlp.models.nlp_model import NLPModel
@@ -39,8 +38,9 @@ from nemo.core.neural_types import NeuralType
 from nemo.utils.get_rank import is_global_rank_zero
 
 from data_utils import SGDDataProcessor, SGDDataset
+from data_utils.evaluate import evaluate, get_in_domain_services
 
-__all__ = ['SGDQAModel']
+__all__ = ["SGDQAModel"]
 
 NUM_TASKS = 6  # number of multi-head tasks
 
@@ -449,7 +449,6 @@ class SGDQAModel(NLPModel):
 
         ids_to_service_names_dict = self.dialogues_processor.schemas._services_id_to_vocab
         example_id = get_str_example_id(dataloader.dataset, ids_to_service_names_dict, example_id_num)
-        # TODO
 
         metrics = {}
         try:
@@ -464,7 +463,7 @@ class SGDQAModel(NLPModel):
             os.makedirs(prediction_dir, exist_ok=True)
 
             input_json_files = SGDDataProcessor.get_dialogue_files(
-                self._cfg.dataset.data_dir, split, self._cfg.dataset.task_name
+                self._cfg.dataset.data_dir, self._cfg.dataset.task_name, split
             )
 
             predictions = {}

@@ -110,7 +110,15 @@ from sgdqa_model import SGDQAModel
 
 @hydra_runner(config_path="conf", config_name="sgdqa_config")
 def main(cfg: DictConfig) -> None:
+    if "dev" not in cfg.model.dataset.task_name:
+        cfg.model.validation_ds = None
+    if "test" not in cfg.model.dataset.task_name:
+        cfg.model.test_ds = None
+    else:
+        cfg.do_training = False
+    
     logging.info(f"Config: {OmegaConf.to_yaml(cfg)}")
+    pl.seed_everything(cfg.seed, workers=True)
     trainer = pl.Trainer(**cfg.trainer)
     exp_manager(trainer, cfg.get("exp_manager", None))
 

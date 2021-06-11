@@ -10,22 +10,20 @@ import pickle
 import re
 from typing import Dict, List
 import glob
-
 import numpy as np
 
-from nemo.collections.nlp.data.dialogue_state_tracking.sgd.input_example import InputExample
 from nemo.utils import logging
+
+from .input_example import InputExample
 
 __all__ = ["SGDDataProcessor"]
 
 DATASET_NAMES = {
-    "train_dev": {"train": ["train_"], "dev": ["dev_"]},
+    "train_dev": {"train": ["train"], "dev": ["dev"]},
     "train": {"train": ["train", "dev"]},
     "test_seen": {"train": ["train", "dev"], "test": ["test_seen"]},
     "test_unseen": {"train": ["train", "dev"], "test": ["test_unseen"]},
 }
-#TODO
-
 
 class SGDDataProcessor(object):
     """Data generator for SGD dialogues."""
@@ -179,7 +177,7 @@ class SGDDataProcessor(object):
         """
         seen_services = self._seen_services[dataset_split]
         return seen_services
-
+    
     def _generate_dialog_examples(self, dataset_split: str, schemas: object, subsample: bool):  
     # Called by save_dialog_examples
         """
@@ -275,7 +273,7 @@ class SGDDataProcessor(object):
                                     slot1, slot2 = slot2, slot1
                                 slot_carryover_candlist[(service1, slot1, service2, slot2)] += 1
         return examples
-
+    
     def _get_state_update(self, current_state: dict, prev_state: dict) -> dict: # Called by _create_examples_from_turn
         """
         Updates dialogue state
@@ -478,7 +476,7 @@ class SGDDataProcessor(object):
                                 2 + len(slot_tokens) + len(system_tokens),
                             )
                         except:
-                            continue
+                            user_span_boundaries = {}
                         if system_frame is not None:
                             system_span_boundaries = self._find_subword_indices(
                                 state_update,
@@ -557,8 +555,8 @@ class SGDDataProcessor(object):
             for slot_span in char_slot_spans:
                 if slot_span["slot"] == slot:
                     value = utterance[slot_span["start"]: slot_span["exclusive_end"]]
-                    start_tok_idx = alignments[slot_span["start"]]
-                    end_tok_idx = alignments[slot_span["exclusive_end"] - 1]
+                    start_tok_idx = alignments[slot_span["start"]][0]
+                    end_tok_idx = alignments[slot_span["exclusive_end"] - 1][1]
                     if 0 <= start_tok_idx < len(subwords):
                         end_tok_idx = min(end_tok_idx, len(subwords) - 1)
                         value_char_spans[value] = (start_tok_idx + bias, end_tok_idx + bias)
@@ -593,7 +591,8 @@ class SGDDataProcessor(object):
         tokens = SGDDataProcessor._naive_tokenize(utterance)
         # ['I', ' ', 'am', ' ', 'feeling', ' ', 'hungry', ' ', 'so', ' ', 'I', ' ', 'would', ' ', 'like', ' ', 'to', ' ', 'find', ' ', 'a', ' ', 'place', ' ', 'to', ' ', 'eat', '.']
         # Filter out empty tokens and obtain aligned character index for each token.
-        alignments = {}
+        chars_start_bert_tokens = []
+        chars_end_bert_tokens = []
         char_index = 0
         bert_tokens = (
             []
@@ -606,14 +605,19 @@ class SGDDataProcessor(object):
                 subwords = self._tokenizer.text_to_tokens(token)
                 # Store the alignment for the index of starting character and the
                 # inclusive ending character of the token.
-                alignments[char_index] = len(bert_tokens)
+                chars_start_bert_tokens.extend([len(bert_tokens)] * len(token))
                 bert_tokens_start_chars.extend([char_index] * len(subwords))
                 bert_tokens.extend(subwords)
                 # The inclusive ending character index corresponding to the word.
                 inclusive_char_end = char_index + len(token) - 1
-                alignments[inclusive_char_end] = len(bert_tokens) - 1
+                chars_end_bert_tokens.extend([len(bert_tokens) - 1] * len(token))
                 bert_tokens_end_chars.extend([inclusive_char_end] * len(subwords))
+            else:
+                chars_start_bert_tokens.extend([None] * len(token))
+                chars_end_bert_tokens.extend([None] * len(token))
             char_index += len(token)
+            assert char_index == len(chars_start_bert_tokens) == len(chars_end_bert_tokens)
+        alignments = list(zip(chars_start_bert_tokens, chars_end_bert_tokens))
         inverse_alignments = list(zip(bert_tokens_start_chars, bert_tokens_end_chars))
         return bert_tokens, alignments, inverse_alignments
 
