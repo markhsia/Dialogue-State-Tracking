@@ -7,6 +7,16 @@ import random
 
 random.seed(1114)
 
+def get_state_updates(prev_state, curr_state):
+    state_updates = dict(curr_state)
+    for slot, values in curr_state.items():
+        if slot in prev_state and sorted(prev_state[slot]) == sorted(values):
+            # Remove the slot from state if its value didn't change.
+            state_updates.pop(slot)
+
+    return state_updates
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dial_dir", required=True, type=str)
@@ -39,9 +49,9 @@ if __name__ == "__main__":
             dial_id = dial["dialogue_id"]
             services = dial["services"]
             utterances = ''
-            global_bounds = {"dontcare": (-1, -1)}
-            states_record = {service: dict() for service in services}
-            bounds_record = {service: dict() for service in services}
+            value_bounds = {"dontcare": (-1, -1)}
+            prev_states = dict()
+            records = defaultdict(dict)
             with_labels = False
             for turn in dial["turns"]:
                 utterances += turn["speaker"].strip().capitalize() + ": "
@@ -50,37 +60,38 @@ if __name__ == "__main__":
                     with_labels = True
                     for frame in turn["frames"]:
                         service = frame["service"]
-                        if service not in states_record:
-                            continue
+                        update_bounds = False
                         for span_chunk in frame["slots"]:
-                            slot = span_chunk["slot"]
                             if "copy_from" in span_chunk:
                                 continue
                             start = span_chunk["start"]
                             ex_end = span_chunk["exclusive_end"]
                             value = utterance[start: ex_end]
                             bias = len(utterances)
-                            global_bounds[value] = (bias + start, bias + ex_end)
-                            global_bounds["MWOZ__" + value.lower()] = (bias + start, bias + ex_end)
-                        if "state" in frame:
-                            states_record[service] = frame["state"]["slot_values"]
-                            bounds_record[service] = dict(global_bounds)
+                            update_bounds = True
+                            value_bounds[value] = (bias + start, bias + ex_end)
+                            value_bounds["MWOZ__" + value.lower()] = (bias + start, bias + ex_end)
+                        if update_bounds and "state" in frame:
+                            curr_state = frame["state"]["slot_values"]
+                            for slot, values in curr_state.items():
+                                bounds = max([value_bounds.get(v, (-1, -1)) for v in values] + \
+                                            [value_bounds.get("MWOZ__" + v, (-1, -1)) for v in values])
+                                records[service][slot] = {"bounds": bounds, "values": values}
+                            prev_states[service] = curr_state
                 utterances += utterance + ' '
              
             if with_labels:
                 for service in services:
                     service_desc = noncat_descriptions[service]["service_desc"]
-                    states = states_record[service]
-                    bounds = bounds_record[service]
                     for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
                         slot_desc = noncat_descriptions[service]["slot_descs"][slot]
-                        values = states.get(slot, [])
-                        if len(values) > 0:
-                            start, end = max([bounds.get(v, (-1, -1)) for v in values] + \
-                                        [bounds.get("MWOZ__" + v, (-1, -1)) for v in values])
+                        record = records[service].get(slot)
+                        if record != None:
+                            start, end = record["bounds"]
+                            values = record["values"]
                             lower_values = [v.lower() for v in values]
                             if (utterances[start: end].lower() not in lower_values and "dontcare" not in lower_values):
-                                print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, values))
+                                print("Not matched: {} | {} | {} | {}".format(fn, dial_id, slot, values))
                                 if not args.keep_no_matched:
                                     continue
                             data.append({"id": len(data),
