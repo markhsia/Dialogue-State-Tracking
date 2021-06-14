@@ -7,12 +7,19 @@ import random
 
 random.seed(1114)
 
+def get_state_updates(prev_state, curr_state):
+    state_updates = dict(curr_state)
+    for slot, values in curr_state.items():
+        if slot in prev_state and sorted(prev_state[slot]) == sorted(values):
+            del state_updates[slot]
+
+    return state_updates
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dial_dir", required=True, type=str)
     parser.add_argument("-s", "--schema_file", required=True, type=str)
     parser.add_argument("-o", "--out_file", required=True, type=str)
-    parser.add_argument("--keep_no_matched", action="store_true")
     args = parser.parse_args()
 
     with open(args.schema_file, 'r') as rf:
@@ -70,7 +77,15 @@ if __name__ == "__main__":
                             for value in values:
                                 bounds_record[service][slot][value] = (len(utterances), len(utterances) + len(utterance))
                         if "state" in frame:
-                            states_record[service] = frame["state"]["slot_values"]
+                            curr_state = frame["state"]["slot_values"]
+                            state_updates = get_state_updates(states_record[service], curr_state)
+                            for slot, values in state_updates.items():
+                                for value in values:
+                                    if value not in bounds_record[service][slot]:
+                                        bounds_record[service][slot][value] = (len(utterances), \
+                                                                                len(utterances) + len(utterance))
+                            states_record[service] = curr_state
+
                 utterances += utterance + ' '
 
             if with_labels:
@@ -83,8 +98,8 @@ if __name__ == "__main__":
                         values = states.get(slot, ["unknown"])
                         (start, end), value = max([(bounds[slot].get(v, (-1, -1)), v) for v in values])
                         if (start, end) == (-1, -1) and value != "unknown":
-                            print(bounds)
                             print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, values))
+                            continue
                         data.append({"id": len(data),
                                     "dial_id": dial_id,
                                     "utterances": utterances,

@@ -32,6 +32,7 @@ def prepare_train_features(examples, args, tokenizer):
     for i, offsets in enumerate(offset_mapping):
         input_ids = tokenized_examples["input_ids"][i]
         cls_index = input_ids.index(tokenizer.cls_token_id)
+        sep_index = input_ids.index(tokenizer.sep_token_id)
         tokenized_examples["cls_index"].append(cls_index)
 
         sequence_ids = tokenized_examples["token_type_ids"][i]
@@ -41,7 +42,7 @@ def prepare_train_features(examples, args, tokenizer):
         utter_idx = 1 if pad_on_right else 0
 
         tokenized_examples["p_mask"].append(
-            [0.0 if (not special_tokens[i][k] and s == utter_idx) or k == cls_index else 1.0 \
+            [0.0 if (not special_tokens[i][k] and s == utter_idx) or k in [cls_index, sep_index] else 1.0 \
                 for k, s in enumerate(sequence_ids)]
         )
 
@@ -49,14 +50,11 @@ def prepare_train_features(examples, args, tokenizer):
         impossible = 1 - examples[args.active_col][sample_index]
         char_start_index = examples[args.start_col][sample_index]
         char_end_index = examples[args.end_col][sample_index]
+        value = examples[args.value_col][sample_index]
         if impossible == 1: # non-active
             tokenized_examples["start_positions"].append(cls_index)
             tokenized_examples["end_positions"].append(cls_index)
             tokenized_examples["is_impossible"].append(1.0)
-        elif char_start_index == -1 and char_end_index == -1:   # dontcare
-            tokenized_examples["start_positions"].append(cls_index)
-            tokenized_examples["end_positions"].append(cls_index)
-            tokenized_examples["is_impossible"].append(0.0)
         else:
             token_start_index = 0
             while sequence_ids[token_start_index] != utter_idx:
@@ -71,8 +69,12 @@ def prepare_train_features(examples, args, tokenizer):
                 tokenized_examples["start_positions"].append(cls_index)
                 tokenized_examples["end_positions"].append(cls_index)
                 tokenized_examples["is_impossible"].append(1.0)
+            elif value == "dontcare":   # dontcare
+                tokenized_examples["start_positions"].append(sep_index)
+                tokenized_examples["end_positions"].append(sep_index)
+                tokenized_examples["is_impossible"].append(0.0)
             else:   # active
-                while token_start_index < len(offsets) and offsets[token_start_index][0] <= char_start_index:
+                while token_start_index <= token_end_index and offsets[token_start_index][0] <= char_start_index:
                     token_start_index += 1
                 token_start_index -= 1
                 tokenized_examples["start_positions"].append(token_start_index)
@@ -83,7 +85,7 @@ def prepare_train_features(examples, args, tokenizer):
                 tokenized_examples["is_impossible"].append(0.0)
                 
                 #if offsets[token_start_index][0] != char_start_index or offsets[token_end_index][1] != char_end_index:
-                #    print("OhOhOh", sample_index, offsets[token_start_index], offsets[token_end_index], examples[args.utter_col][sample_index][offsets[token_start_index][0]: offsets[token_end_index][1]], examples[args.value_col][sample_index])
+                #    print("OhOhOh", examples[args.id_col][sample_index], char_start_index, char_end_index, token_start_index, token_end_index, offsets[token_start_index], offsets[token_end_index], examples[args.utter_col][sample_index][offsets[token_start_index][0]: offsets[token_end_index][1]], examples[args.value_col][sample_index])
     
     return tokenized_examples
 
@@ -117,6 +119,7 @@ def prepare_pred_features(examples, args, tokenizer):
     tokenized_examples["p_mask"] = []
     for i, input_ids in enumerate(tokenized_examples["input_ids"]):
         cls_index = input_ids.index(tokenizer.cls_token_id)
+        sep_index = input_ids.index(tokenizer.sep_token_id)
         tokenized_examples["cls_index"].append(cls_index)
 
         sequence_ids = tokenized_examples["token_type_ids"][i]
@@ -126,7 +129,7 @@ def prepare_pred_features(examples, args, tokenizer):
         utter_idx = 1 if pad_on_right else 0
 
         tokenized_examples["p_mask"].append(
-            [0.0 if (not special_tokens[i][k] and s == utter_idx) or k == cls_index else 1.0
+            [0.0 if (not special_tokens[i][k] and s == utter_idx) or k in [cls_index, sep_index] else 1.0
                 for k, s in enumerate(sequence_ids)]
         )
 

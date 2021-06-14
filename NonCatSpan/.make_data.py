@@ -12,7 +12,8 @@ def get_state_updates(prev_state, curr_state):
     for slot, values in curr_state.items():
         if slot in prev_state and sorted(prev_state[slot]) == sorted(values):
             # Remove the slot from state if its value didn't change.
-            state_updates.pop(slot)
+            print(slot)
+            del state_updates[slot]
 
     return state_updates
 
@@ -73,6 +74,7 @@ if __name__ == "__main__":
                             value_bounds["MWOZ__" + value.lower()] = (bias + start, bias + ex_end)
                         if update_bounds and "state" in frame:
                             curr_state = frame["state"]["slot_values"]
+                            update_bounds = get_state_updates(prev_states.get(service, {}), curr_state)
                             for slot, values in curr_state.items():
                                 bounds = max([value_bounds.get(v, (-1, -1)) for v in values] + \
                                             [value_bounds.get("MWOZ__" + v, (-1, -1)) for v in values])

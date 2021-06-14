@@ -7,6 +7,15 @@ import random
 
 random.seed(1114)
 
+def get_dontcare_updates(prev_state, curr_state):
+    slots = []
+    for slot, values in curr_state.items():
+        if "dontcare" in values and "dontcare" not in prev_state.get(slot, []):
+            slots.append(slot)
+    
+    return slots
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dial_dir", required=True, type=str)
@@ -39,7 +48,7 @@ if __name__ == "__main__":
             dial_id = dial["dialogue_id"]
             services = dial["services"]
             utterances = ''
-            global_bounds = {"dontcare": (-1, -1)}
+            global_bounds = {}
             states_record = {service: dict() for service in services}
             bounds_record = {service: dict() for service in services}
             with_labels = False
@@ -63,7 +72,12 @@ if __name__ == "__main__":
                             global_bounds[value] = (bias + start, bias + ex_end)
                             global_bounds["MWOZ__" + value.lower()] = (bias + start, bias + ex_end)
                         if "state" in frame:
-                            states_record[service] = frame["state"]["slot_values"]
+                            curr_state = frame["state"]["slot_values"]
+                            dontcare_slots = get_dontcare_updates(states_record[service], curr_state)
+                            for slot in dontcare_slots:
+                                global_bounds["{}-{}-dontcare".format(service, slot)] = (len(utterances), \
+                                                                                        len(utterances) + len(utterance))
+                            states_record[service] = curr_state
                             bounds_record[service] = dict(global_bounds)
                 utterances += utterance + ' '
              
@@ -76,10 +90,13 @@ if __name__ == "__main__":
                         slot_desc = noncat_descriptions[service]["slot_descs"][slot]
                         values = states.get(slot, [])
                         if len(values) > 0:
-                            start, end = max([bounds.get(v, (-1, -1)) for v in values] + \
-                                        [bounds.get("MWOZ__" + v, (-1, -1)) for v in values])
+                            (start, end), value = max([(bounds.get(v, (-1, -1)), v) for v in values] + \
+                                                [(bounds.get("MWOZ__" + v, (-1, -1)), v) for v in values if v.islower()] + \
+                                                [(bounds.get("{}-{}-{}".format(service, slot, v)), v) \
+                                                    for v in values if v == "dontcare"])
                             lower_values = [v.lower() for v in values]
                             if (utterances[start: end].lower() not in lower_values and "dontcare" not in lower_values):
+                                #print(bounds)
                                 print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, values))
                                 if not args.keep_no_matched:
                                     continue
@@ -93,6 +110,7 @@ if __name__ == "__main__":
                                         "active": 1,
                                         "start": start,
                                         "end": end,
+                                        "value": value,
                                         "values": values})
                         
                         else:

@@ -1,26 +1,23 @@
 import os
 import sys
-import json
 import argparse
 import logging
 import math
 from functools import partial
 from time import strftime, localtime
 import datasets
-from datasets import load_dataset
+from datasets import load_dataset, load_metric
 from accelerate import Accelerator
 import torch
 from torch.utils.data.dataloader import DataLoader
-from torch.nn.utils import clip_grad_norm_
 import transformers
 from transformers import (
     CONFIG_MAPPING,
     MODEL_MAPPING,
     AdamW,
-    DataCollatorWithPadding,
-    XLNetConfig,
-    XLNetForQuestionAnswering,
-    XLNetTokenizerFast,
+    AutoConfig,
+    AutoModelForMultipleChoice,
+    AutoTokenizer,
     default_data_collator,
     get_scheduler,
     set_seed,
@@ -28,7 +25,6 @@ from transformers import (
 
 from data_utils import *
 from pred_utils import *
-from metrics import compute_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -36,35 +32,31 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_file", type=str, required=True)
     parser.add_argument("--valid_file", type=str)
+    parser.add_argument("--neg_num", type=int, default=5)
     parser.add_argument("--max_seq_len", type=int, default=512)
     parser.add_argument("--stride", type=int, default=256)
     parser.add_argument("--config_name", type=str)
     parser.add_argument("--tokenizer_name", type=str)
     parser.add_argument("--model_name", type=str)
     parser.add_argument("--train_batch_size", type=int, default=4)
-    parser.add_argument("--valid_batch_size", type=int, default=64)
+    parser.add_argument("--valid_batch_size", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--weight_decay", type=float, default=1e-2)
     parser.add_argument("--epoch_num", type=int, default=3)
-    parser.add_argument("--grad_max_norm", type=float, default=5)
+    parser.add_argument("--grad_max_norm", type=int, default=5)
     parser.add_argument("--grad_accum_steps", type=int, default=16)
     parser.add_argument("--sched_type", type=str, default="linear", choices=["linear", "cosine", "constant"])
     parser.add_argument("--warmup_ratio", type=float, default=0.1)
-    parser.add_argument("--log_steps", type=int, default=1000)
-    parser.add_argument("--eval_steps", type=int, default=25000)
+    parser.add_argument("--log_steps", type=int, default=500)
+    parser.add_argument("--eval_steps", type=int, default=2000)
     parser.add_argument("--saved_dir", type=str, default="./saved")
     parser.add_argument("--seed", type=int, default=14)
-    parser.add_argument("--start_n_top", type=int, default=5, help="For beam model")
-    parser.add_argument("--end_n_top", type=int, default=5, help="For beam model")
-    parser.add_argument("--n_best", type=int, default=20)
-    parser.add_argument("--max_ans_len", type=int, default=30)
     args = parser.parse_args()
     
     args.saved_dir = os.path.join(args.saved_dir, strftime("%m%d-%H%M", localtime()))
     os.makedirs(args.saved_dir, exist_ok=True)
     
     return args
-
 
 if __name__ == "__main__":
 # Parse arguments and save them.
@@ -100,33 +92,31 @@ if __name__ == "__main__":
     
 # Load pretrained tokenizer and model. Also, save tokenizer.
     if args.config_name:
-        config = XLNetConfig.from_pretrained(args.config_name)
+        config = AutoConfig.from_pretrained(args.config_name)
     elif args.model_name:
-        config = XLNetConfig.from_pretrained(args.model_name)
+        config = AutoConfig.from_pretrained(args.model_name)
     else:
         config = CONFIG_MAPPING[args.model_type]()
         logger.warning("You are instantiating a new config instance from scratch.")
     
     if args.tokenizer_name:
-        tokenizer = XLNetTokenizerFast.from_pretrained(args.tokenizer_name)
+        tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_name, use_fast=True, do_lower_case=True)
     elif args.model_name:
-        tokenizer = XLNetTokenizerFast.from_pretrained(args.model_name)
+        tokenizer = AutoTokenizer.from_pretrained(args.model_name, use_fast=True, do_lower_case=True)
     else:
         raise ValueError(
             "You are instantiating a new tokenizer from scratch. This is not supported by this script."
             "You can do it from another script, save it, and load it from here, using --tokenizer_name."
         )
-
+    
     logger.info("Saving tokenizer to {}...".format(os.path.join(args.saved_dir, "tokenizer")))
     tokenizer.save_pretrained(args.saved_dir)
-    
-    config.__dict__["start_n_top"] = args.start_n_top
-    config.__dict__["end_n_top"] = args.end_n_top
+
     if args.model_name:
-        model = XLNetForQuestionAnswering.from_pretrained(args.model_name, config=config)
+        model = AutoModelForMultipleChoice.from_pretrained(args.model_name, config=config)
     else:
         logger.info("Training new model from scratch")
-        model = XLNetForQuestionAnswering.from_config(config)
+        model = AutoModelForMultipleChoice.from_config(config)
 
 
 # Load and preprocess the datasets
@@ -140,12 +130,11 @@ if __name__ == "__main__":
     args.utter_col = "utterances"
     args.service_col = "service_desc"
     args.slot_col = "slot_desc"
-    args.active_col = "active"
     args.start_col = "start"
     args.end_col = "end"
-    args.value_col = "value"
-    args.values_col = "values"
-
+    args.poss_values_col = "poss_values"
+    args.label_col = "label"
+    
     train_examples = raw_datasets["train"]
     #train_examples = train_examples.select(range(10))
     prepare_train_features = partial(prepare_train_features, args=args, tokenizer=tokenizer)
@@ -155,7 +144,7 @@ if __name__ == "__main__":
         num_proc=4,
         remove_columns=cols,
     )
-
+    
     if args.valid_file:
         valid_examples = raw_datasets["valid"]
         #valid_examples = valid_examples.select(range(10))
@@ -168,10 +157,13 @@ if __name__ == "__main__":
         )
 
 # Create DataLoaders
-    data_collator = default_data_collator
-    train_dataloader = DataLoader(train_dataset, shuffle=True, collate_fn=data_collator, batch_size=args.train_batch_size)
+    data_collator = partial(data_collator_with_neg_sampling, args=args)
+    train_dataloader = DataLoader(train_dataset, shuffle=True, collate_fn=data_collator, 
+                            batch_size=args.train_batch_size, num_workers=4)
     if args.valid_file:
-        valid_dataloader = DataLoader(valid_dataset, collate_fn=data_collator, batch_size=args.valid_batch_size)
+        data_collator = default_data_collator
+        valid_dataloader = DataLoader(valid_dataset, collate_fn=data_collator, 
+                            batch_size=args.valid_batch_size, num_workers=4)
     
 # Optimizer
 # Split weights in two groups, one with weight decay and the other not.
@@ -220,7 +212,7 @@ if __name__ == "__main__":
     logger.info(f"Update steps per epoch = {update_steps_per_epoch}")
     logger.info(f"Total update steps = {args.max_update_steps}")
     
-    max_valid_jga = 0
+    max_valid_acc = 0
     for epoch in range(args.epoch_num):
         logger.info("\nEpoch {:02d} / {:02d}".format(epoch + 1, args.epoch_num))
         total_loss = 0
@@ -238,7 +230,6 @@ if __name__ == "__main__":
             
         # Update model parameters
             if step % args.grad_accum_steps == 0 or step == len(train_dataloader):
-                clip_grad_norm_(model.parameters(), max_norm=args.grad_max_norm)
                 optimizer.step()
                 lr_scheduler.step()
                 optimizer.zero_grad()
@@ -249,61 +240,26 @@ if __name__ == "__main__":
             if args.valid_file and (step % args.eval_steps == 0 or step == len(train_dataloader)):
                 valid_dataset.set_format(columns=["attention_mask", "input_ids", "token_type_ids"])
                 model.eval()
-                all_start_top_log_probs = []
-                all_start_top_index = []
-                all_end_top_log_probs = []
-                all_end_top_index = []
-                all_cls_logits = []
+                all_logits = []
                 for step, data in enumerate(valid_dataloader):
                     with torch.no_grad():
                         outputs = model(**data)
-                        start_top_log_probs = outputs.start_top_log_probs
-                        start_top_index = outputs.start_top_index
-                        end_top_log_probs = outputs.end_top_log_probs
-                        end_top_index = outputs.end_top_index
-                        cls_logits = outputs.cls_logits
-                        all_start_top_log_probs.append(accelerator.gather(start_top_log_probs).cpu().numpy())
-                        all_start_top_index.append(accelerator.gather(start_top_index).cpu().numpy())
-                        all_end_top_log_probs.append(accelerator.gather(end_top_log_probs).cpu().numpy())
-                        all_end_top_index.append(accelerator.gather(end_top_index).cpu().numpy())
-                        all_cls_logits.append(accelerator.gather(cls_logits).cpu().numpy())
+                        all_logits.append(accelerator.gather(outputs.logits).squeeze(-1).cpu().numpy())
 
-                max_len = max([x.shape[1] for x in all_end_top_log_probs])  # Get the max_length of the tensor
-                start_top_log_probs_concat = create_and_fill_np_array(all_start_top_log_probs, valid_dataset, max_len)
-                start_top_index_concat = create_and_fill_np_array(all_start_top_index, valid_dataset, max_len)
-                end_top_log_probs_concat = create_and_fill_np_array(all_end_top_log_probs, valid_dataset, max_len)
-                end_top_index_concat = create_and_fill_np_array(all_end_top_index, valid_dataset, max_len)
-                all_cls_logits = np.concatenate(all_cls_logits, axis=0)
-                outputs_numpy = (
-                    start_top_log_probs_concat,
-                    start_top_index_concat,
-                    end_top_log_probs_concat,
-                    end_top_index_concat,
-                    all_cls_logits,
-                )
+                outputs_numpy = np.concatenate(all_logits, axis=0)
 
                 valid_dataset.set_format(columns=list(valid_dataset.features.keys()))
-                predictions, references = post_processing_function(valid_examples, valid_dataset, outputs_numpy, 
-                                                                args, tokenizer, model)
-                eval_results = compute_metrics(predictions, references, \
-                                            valid_examples[args.id_col], valid_examples[args.dial_id_col])
-                logger.info("Valid | MAA: {:.5f}, JAA: {:.5f}, " \
-                            "MEM: {:.5f}, JEM: {:.5f}, " \
-                            "MGA: {:.5f}, JGA: {:.5f}".format( \
-                                eval_results["maa"], eval_results["jaa"], \
-                                eval_results["mem"], eval_results["jem"], \
-                                eval_results["mga"], eval_results["jga"]))
-                valid_jga = eval_results["jga"]
-                if valid_jga >= max_valid_jga:
-                    max_valid_jga = valid_jga
+                predictions = post_processing_function(valid_examples, valid_dataset, outputs_numpy, args)
+                valid_acc = metrics.compute(predictions=predictions.predictions, references=predictions.label_ids)
+                logger.info("Valid | Acc: {:.5f}".format(valid_acc))
+                if valid_acc >= max_valid_acc:
+                    max_valid_acc = valid_acc
                     accelerator.wait_for_everyone()
                     unwrapped_model = accelerator.unwrap_model(model)
                     unwrapped_model.save_pretrained(args.saved_dir, save_function=accelerator.save)
                     logger.info("Saving config and model to {}...".format(args.saved_dir))
-    
     if not args.valid_file:
         accelerator.wait_for_everyone()
         unwrapped_model = accelerator.unwrap_model(model)
         unwrapped_model.save_pretrained(args.saved_dir, save_function=accelerator.save)
         logger.info("Saving config and model to {}...".format(args.saved_dir))
-

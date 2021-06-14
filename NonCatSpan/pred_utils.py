@@ -8,19 +8,20 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-def post_processing_function(examples, features, pred_logits, args, model):
+def post_processing_function(examples, features, pred_logits, args, tokenizer, model):
     predictions = postprocess_qa_predictions_with_beam_search(
         args=args,
         examples=examples,
         features=features,
         pred_logits=pred_logits,
+        tokenizer=tokenizer,
         n_best=args.n_best,
         max_ans_len=args.max_ans_len,
         start_n_top=model.config.start_n_top,
         end_n_top=model.config.end_n_top,
     )
 
-    references = {ex[args.id_col]: (ex[args.active_col], ex[args.value_col]) for ex in examples}
+    references = {ex[args.id_col]: (ex[args.active_col], ex[args.values_col]) for ex in examples}
 
     return predictions, references
 
@@ -30,6 +31,7 @@ def postprocess_qa_predictions_with_beam_search(
     examples,
     features,
     pred_logits: Tuple[np.ndarray, np.ndarray],
+    tokenizer,
     n_best: int = 20,
     max_ans_len: int = 30,
     start_n_top: int = 5,
@@ -49,26 +51,25 @@ def postprocess_qa_predictions_with_beam_search(
 
     all_predictions = collections.OrderedDict()
     all_nbest_json = collections.OrderedDict()
-    scores_diff_json = collections.OrderedDict()
 
     logger.setLevel(logging.INFO if is_world_process_zero else logging.WARN)
     logger.info(f"Post-processing {len(examples)} example predictions split into {len(features)} features.")
 
     for example_index, example in enumerate(examples):
         feature_indices = features_per_example[example_index]
-        min_null_score = None
         prelim_predictions = []
         for feature_index in feature_indices:
             start_log_prob = start_top_log_probs[feature_index]
             start_indexes = start_top_index[feature_index]
             end_log_prob = end_top_log_probs[feature_index]
             end_indexes = end_top_index[feature_index]
-            feature_null_score = cls_logits[feature_index]
+            active = int(cls_logits[feature_index] < 0)
+            input_ids = features[feature_index]["input_ids"]
+            cls_index = input_ids.index(tokenizer.cls_token_id)
+            sep_index = input_ids.index(tokenizer.sep_token_id)
             offset_mapping = features[feature_index]["offset_mapping"]
             token_is_max_context = features[feature_index].get("token_is_max_context", None)
-
-            if min_null_score is None or feature_null_score < min_null_score:
-                min_null_score = feature_null_score
+            assert token_is_max_context == None
 
             for i in range(start_n_top):
                 for j in range(end_n_top):
@@ -80,31 +81,39 @@ def postprocess_qa_predictions_with_beam_search(
                         continue
                     if end_index < start_index or end_index - start_index + 1 > max_ans_len:
                         continue
-                    if token_is_max_context is not None and not token_is_max_context.get(str(start_index), False):
-                        continue
+                    
+                    if start_index == cls_index and end_index == cls_index:
+                        pred_type = "cls"
+                    elif start_index == sep_index and end_index == sep_index:
+                        pred_type = "sep"
+                    else:
+                        pred_type = "text"
+                     
                     prelim_predictions.append(
                         {
+                            "pred_type": pred_type,
                             "offsets": (offset_mapping[start_index][0], offset_mapping[end_index][1]),
-                            "score": start_log_prob[i] + end_log_prob[j_],
+                            "scores": (active, start_log_prob[i] * end_log_prob[j_]),   # log_prob is standard prob
                             "start_log_prob": start_log_prob[i],
                             "end_log_prob": end_log_prob[j_]
                         }
                     )
-
-        predictions = sorted(prelim_predictions, key=lambda x: x["score"], reverse=True)[:n_best]
+        predictions = sorted(prelim_predictions, key=lambda x: x["scores"], reverse=True)[:n_best]
         utter = example[args.utter_col]
         for pred in predictions:
             offsets = pred.pop("offsets")
             pred["text"] = utter[offsets[0]: offsets[1]]
 
         if len(predictions) == 0:
-            predictions.insert(0, {"text": '', "start_logit": -1e-6, "end_logit": -1e-6, "score": -2e-6})
+            predictions.insert(0, {"pred_type": "cls", "text": '', 
+                                    "scores": (0, -2e-6), "start_log_prob": -1e-6, "end_log_prob": -1e-6})
         
-        pred_active = int(min_null_score < 0)
+        pred_active = predictions[0]["scores"][0]
         pred_text = predictions[0]["text"]
+        pred_type = predictions[0]["pred_type"]
         if pred_active == 0:
             pred_text = ''
-        if pred_active == 1 and len(pred_text) == 0:
+        elif pred_type == "sep":
             pred_text = "dontcare"
 
         all_predictions[example[args.id_col]] = (pred_active, pred_text)
@@ -141,4 +150,3 @@ def create_and_fill_np_array(start_or_end_logits, dataset, max_len):
             step += batch_size
 
         return logits_concat
-
