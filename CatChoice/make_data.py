@@ -27,7 +27,6 @@ if __name__ == "__main__":
     cat_descriptions = defaultdict(dict)
     cat_slots = defaultdict(set)
     cat_poss_values = defaultdict(dict)
-    cat_poss_value_ids = defaultdict(lambda: defaultdict(dict))
     for service_i, service_chunk in enumerate(schema):
         service = service_chunk["service_name"]
         cat_descriptions[service]["service_desc"] = service_chunk["description"]
@@ -40,8 +39,6 @@ if __name__ == "__main__":
             cat_descriptions[service]["slot_descs"][slot] = slot_chunk["description"]
             poss_values = ["unknown", "dontcare"] + slot_chunk["possible_values"]
             cat_poss_values[service][slot] = poss_values
-            for v_i, v in enumerate(poss_values):
-                cat_poss_value_ids[service][slot][v] = v_i
 
     data = []
     for fn in sorted(glob.glob(os.path.join(args.dial_dir, "dialogues_*.json"))):
@@ -92,33 +89,35 @@ if __name__ == "__main__":
                 for service in services:
                     service_desc = cat_descriptions[service]["service_desc"]
                     states = states_record[service]
-                    bounds = bounds_record[service]
                     for slot, poss_values in sorted(cat_poss_values[service].items()):
                         slot_desc = cat_descriptions[service]["slot_descs"][slot]
-                        values = states.get(slot, ["unknown"])
-                        (start, end), value = max([(bounds[slot].get(v, (-1, -1)), v) for v in values])
-                        if (start, end) == (-1, -1) and value != "unknown":
-                            print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, values))
-                            continue
-                        data.append({"id": len(data),
-                                    "dial_id": dial_id,
-                                    "utterances": utterances,
-                                    "service": service,
-                                    "service_desc": service_desc,
-                                    "slot": slot,
-                                    "slot_desc": slot_desc,
-                                    "poss_values": poss_values,
-                                    "label": cat_poss_value_ids[service][slot][value],
-                                    "start": start,
-                                    "end": end})
+                        true_values = set(states.get(slot, ["unknown"]))
+                        bounds = bounds_record[service][slot]
+                        for poss_value in poss_values:
+                            label = int(poss_value in true_values)
+                            start, end = bounds.get(poss_value, (-1, -1))
+                            if (start, end) == (-1, -1) and label == 1 and poss_value != "unknown":
+                                print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, poss_value))
+                                continue
+                            data.append({"id": len(data),
+                                        "dial_id": dial_id,
+                                        "utterances": utterances,
+                                        "service": service,
+                                        "service_desc": service_desc,
+                                        "slot": slot,
+                                        "slot_desc": slot_desc,
+                                        "value": poss_value,
+                                        "label": label,
+                                        "start": start,
+                                        "end": end})
                     
             else:
                 raise NotImplementedError
     
-    known_count = 0
+    pos_count = 0
     os.makedirs(os.path.dirname(os.path.abspath(args.out_file)), exist_ok=True)
     with open(args.out_file, 'w') as wf:
         for d in data:
             print(json.dumps(d), file=wf)
-            known_count += int(d["label"] != 0)
-    print(known_count / len(data))
+            pos_count += d["label"]
+    print(pos_count / len(data))

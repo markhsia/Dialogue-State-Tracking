@@ -10,6 +10,7 @@ from datasets import load_dataset, load_metric
 from accelerate import Accelerator
 import torch
 from torch.utils.data.dataloader import DataLoader
+from torch.utils.data import WeightedRandomSampler
 import transformers
 from transformers import (
     CONFIG_MAPPING,
@@ -32,7 +33,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_file", type=str, required=True)
     parser.add_argument("--valid_file", type=str)
-    parser.add_argument("--neg_num", type=int, default=5)
+    parser.add_argument("--neg_ratio", type=int, default=1)
     parser.add_argument("--max_seq_len", type=int, default=512)
     parser.add_argument("--stride", type=int, default=256)
     parser.add_argument("--config_name", type=str)
@@ -130,10 +131,10 @@ if __name__ == "__main__":
     args.utter_col = "utterances"
     args.service_col = "service_desc"
     args.slot_col = "slot_desc"
+    args.value_col = "value"
+    args.label_col = "label"
     args.start_col = "start"
     args.end_col = "end"
-    args.poss_values_col = "poss_values"
-    args.label_col = "label"
     
     train_examples = raw_datasets["train"]
     #train_examples = train_examples.select(range(10))
@@ -157,13 +158,25 @@ if __name__ == "__main__":
         )
 
 # Create DataLoaders
-    data_collator = partial(data_collator_with_neg_sampling, args=args)
-    train_dataloader = DataLoader(train_dataset, shuffle=True, collate_fn=data_collator, 
-                            batch_size=args.train_batch_size, num_workers=4)
+    weights, sampling_num = get_balance_params(train_dataset["labels"], args.neg_ratio)
+    sampler = WeightedRandomSampler(weights, sampling_num, replacement=False)
+    data_collator = default_data_collator
+    train_dataloader = DataLoader(train_dataset, sampler=sampler, collate_fn=data_collator, 
+                                    batch_size=args.train_batch_size, num_workers=4)
     if args.valid_file:
         data_collator = default_data_collator
         valid_dataloader = DataLoader(valid_dataset, collate_fn=data_collator, 
-                            batch_size=args.valid_batch_size, num_workers=4)
+                                    batch_size=args.valid_batch_size, num_workers=4)
+    
+    for e in range(3):
+        pos_count, total_count = 0, 0
+        for step, data in enumerate(train_dataloader, 1):
+            if step == 1:
+                print(data["labels"])
+            pos_count += data["labels"].sum().item()
+            total_count += data["labels"].shape[0]
+        print(pos_count / total_count)
+    exit()
     
 # Optimizer
 # Split weights in two groups, one with weight decay and the other not.
