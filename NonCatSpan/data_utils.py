@@ -2,11 +2,11 @@ def prepare_train_features(examples, args, tokenizer):
     pad_on_right = (tokenizer.padding_side == "right")
     max_seq_len = min(args.max_seq_len, tokenizer.model_max_length)
     if pad_on_right:
-        first_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_col], examples[args.slot_col])]
+        first_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_desc_col], examples[args.slot_desc_col])]
         second_sentences = examples[args.utter_col]
     else:
         first_sentences = examples[args.utter_col]
-        second_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_col], examples[args.slot_col])]
+        second_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_desc_col], examples[args.slot_desc_col])]
     
     tokenized_examples = tokenizer(
         first_sentences,
@@ -93,11 +93,11 @@ def prepare_pred_features(examples, args, tokenizer):
     pad_on_right = (tokenizer.padding_side == "right")
     max_seq_len = min(args.max_seq_len, tokenizer.model_max_length)
     if pad_on_right:
-        first_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_col], examples[args.slot_col])]
+        first_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_desc_col], examples[args.slot_desc_col])]
         second_sentences = examples[args.utter_col]
     else:
         first_sentences = examples[args.utter_col]
-        second_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_col], examples[args.slot_col])]
+        second_sentences = [sv + ": " + sl for sv, sl in zip(examples[args.service_desc_col], examples[args.slot_desc_col])]
     
     tokenized_examples = tokenizer(
         first_sentences,

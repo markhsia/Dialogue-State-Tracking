@@ -4,7 +4,6 @@ import json
 import argparse
 import logging
 import math
-from collections import defaultdict
 from functools import partial
 from time import strftime, localtime
 import datasets
@@ -19,9 +18,9 @@ from transformers import (
     MODEL_MAPPING,
     AdamW,
     DataCollatorWithPadding,
-    XLNetConfig,
-    XLNetForQuestionAnswering,
-    XLNetTokenizerFast,
+    RobertaConfig,
+    RobertaForSequenceClassification,
+    RobertaTokenizerFast,
     default_data_collator,
     get_scheduler,
     set_seed,
@@ -37,10 +36,8 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--test_file", type=str, required=True)
     parser.add_argument("--target_dir", type=str, required=True)
-    parser.add_argument("--test_batch_size", type=int, default=64)
+    parser.add_argument("--test_batch_size", type=int, default=128)
     parser.add_argument("--out_file", type=str, default="./results.json")
-    parser.add_argument("--n_best", type=int, default=20)
-    parser.add_argument("--max_ans_len", type=int, default=30)
     args = parser.parse_args()
     
     return args
@@ -76,11 +73,11 @@ if __name__ == "__main__":
 
     
 # Load pretrained model and tokenizer
-    config = XLNetConfig.from_pretrained(args.target_dir)
-    tokenizer = XLNetTokenizerFast.from_pretrained(args.target_dir)
-    config.__dict__["start_n_top"] = args.start_n_top
-    config.__dict__["end_n_top"] = args.end_n_top
-    model = XLNetForQuestionAnswering.from_pretrained(args.target_dir, config=config)
+    config = RobertaConfig.from_pretrained(args.target_dir)
+    tokenizer = RobertaTokenizerFast.from_pretrained(args.target_dir)
+    config.num_labels = 1
+    config.problem_type = "multi_label_classification"
+    model = RobertaForSequenceClassification.from_pretrained(args.target_dir, config=config)
 
 # Load and preprocess the datasets
     raw_datasets = load_dataset("json", data_files={"test": args.test_file})
@@ -92,8 +89,8 @@ if __name__ == "__main__":
     args.service_desc_col = "service_desc"
     args.slot_col = "slot"
     args.slot_desc_col = "slot_desc"
-    args.active_col = "active"
-    args.values_col = "values"
+    args.value_col = "value"
+    args.label_col = "label"
 
     test_examples = raw_datasets["test"]
     #test_examples = test_examples.select(range(10))
@@ -117,54 +114,34 @@ if __name__ == "__main__":
 # Evaluate!
     logger.info("\n******** Running evaluating ********")
     logger.info(f"Num test examples = {len(test_dataset)}")
-    test_dataset.set_format(columns=["attention_mask", "input_ids", "token_type_ids"])
+    test_dataset.set_format(columns=["attention_mask", "input_ids"])
     model.eval()
-    all_start_top_log_probs = []
-    all_start_top_index = []
-    all_end_top_log_probs = []
-    all_end_top_index = []
-    all_cls_logits = []
+    all_logits = []
     for step, data in enumerate(test_dataloader):
-        with torch.no_grad():
-            outputs = model(**data)
-            start_top_log_probs = outputs.start_top_log_probs
-            start_top_index = outputs.start_top_index
-            end_top_log_probs = outputs.end_top_log_probs
-            end_top_index = outputs.end_top_index
-            cls_logits = outputs.cls_logits
-            all_start_top_log_probs.append(accelerator.gather(start_top_log_probs).cpu().numpy())
-            all_start_top_index.append(accelerator.gather(start_top_index).cpu().numpy())
-            all_end_top_log_probs.append(accelerator.gather(end_top_log_probs).cpu().numpy())
-            all_end_top_index.append(accelerator.gather(end_top_index).cpu().numpy())
-            all_cls_logits.append(accelerator.gather(cls_logits).cpu().numpy())
+            with torch.no_grad():
+                outputs = model(**data)
+                all_logits.append(accelerator.gather(outputs.logits).squeeze(-1).cpu().numpy())
 
-    max_len = max([x.shape[1] for x in all_end_top_log_probs])  # Get the max_length of the tensor
-    start_top_log_probs_concat = create_and_fill_np_array(all_start_top_log_probs, test_dataset, max_len)
-    start_top_index_concat = create_and_fill_np_array(all_start_top_index, test_dataset, max_len)
-    end_top_log_probs_concat = create_and_fill_np_array(all_end_top_log_probs, test_dataset, max_len)
-    end_top_index_concat = create_and_fill_np_array(all_end_top_index, test_dataset, max_len)
-    all_cls_logits = np.concatenate(all_cls_logits, axis=0)
-    outputs_numpy = (
-        start_top_log_probs_concat,
-        start_top_index_concat,
-        end_top_log_probs_concat,
-        end_top_index_concat,
-        all_cls_logits,
-    )
+    outputs_numpy = np.concatenate(all_logits, axis=0)
 
     test_dataset.set_format(columns=list(test_dataset.features.keys()))
-    predictions, _ = post_processing_function(test_examples, test_dataset, outputs_numpy, 
-                                            args, tokenizer, model)
+    predictions, _ = post_processing_function(test_examples, test_dataset, outputs_numpy, args)
     
     dial_mapping = dict()
     slot_mapping = dict()
     for example in test_examples:
-        dial_mapping[example[args.id_col]] = example[args.dial_id_col]
-        slot_mapping[example[args.id_col]] = "{}-{}".format(example[args.service_col], example[args.slot_col])
+        if example[args.id_col] in dial_mapping:
+            assert dial_mapping[example[args.id_col]] == example[args.dial_id_col]
+        else:
+            dial_mapping[example[args.id_col]] = example[args.dial_id_col]
+        if example[args.id_col] in slot_mapping:
+            assert slot_mapping[example[args.id_col]] == "{}-{}".format(example[args.service_col], example[args.slot_col])
+        else:
+            slot_mapping[example[args.id_col]] = "{}-{}".format(example[args.service_col], example[args.slot_col])
 
     results = defaultdict(dict)
-    for id_, (active, value) in predictions.items():
-        if active:
+    for id_, value in predictions.items():
+        if value != "unknown":
             results[dial_mapping[id_]][slot_mapping[id_]] = value
     with open(args.out_file, 'w') as f:
         json.dump(results, f)

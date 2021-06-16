@@ -9,7 +9,7 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 def post_processing_function(examples, features, pred_logits, args, tokenizer, model):
-    predictions = postprocess_qa_predictions_with_beam_search(
+    predictions = postprocess_span_predictions_with_beam_search(
         args=args,
         examples=examples,
         features=features,
@@ -26,7 +26,7 @@ def post_processing_function(examples, features, pred_logits, args, tokenizer, m
     return predictions, references
 
 
-def postprocess_qa_predictions_with_beam_search(
+def postprocess_span_predictions_with_beam_search(
     args,
     examples,
     features,

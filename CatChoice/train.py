@@ -6,9 +6,10 @@ import math
 from functools import partial
 from time import strftime, localtime
 import datasets
-from datasets import load_dataset, load_metric
+from datasets import load_dataset
 from accelerate import Accelerator
 import torch
+from torch.nn.utils import clip_grad_norm_
 from torch.utils.data.dataloader import DataLoader
 from torch.utils.data import WeightedRandomSampler
 import transformers
@@ -16,9 +17,9 @@ from transformers import (
     CONFIG_MAPPING,
     MODEL_MAPPING,
     AdamW,
-    AutoConfig,
-    AutoModelForMultipleChoice,
-    AutoTokenizer,
+    RobertaConfig,
+    RobertaForSequenceClassification,
+    RobertaTokenizerFast,
     default_data_collator,
     get_scheduler,
     set_seed,
@@ -26,6 +27,7 @@ from transformers import (
 
 from data_utils import *
 from pred_utils import *
+from metrics import compute_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -43,13 +45,13 @@ def parse_args():
     parser.add_argument("--valid_batch_size", type=int, default=32)
     parser.add_argument("--lr", type=float, default=3e-5)
     parser.add_argument("--weight_decay", type=float, default=1e-2)
-    parser.add_argument("--epoch_num", type=int, default=3)
+    parser.add_argument("--epoch_num", type=int, default=1)
     parser.add_argument("--grad_max_norm", type=int, default=5)
     parser.add_argument("--grad_accum_steps", type=int, default=16)
     parser.add_argument("--sched_type", type=str, default="linear", choices=["linear", "cosine", "constant"])
     parser.add_argument("--warmup_ratio", type=float, default=0.1)
-    parser.add_argument("--log_steps", type=int, default=500)
-    parser.add_argument("--eval_steps", type=int, default=2000)
+    parser.add_argument("--log_steps", type=int, default=1000)
+    parser.add_argument("--eval_steps", type=int, default=32000)
     parser.add_argument("--saved_dir", type=str, default="./saved")
     parser.add_argument("--seed", type=int, default=14)
     args = parser.parse_args()
@@ -93,17 +95,19 @@ if __name__ == "__main__":
     
 # Load pretrained tokenizer and model. Also, save tokenizer.
     if args.config_name:
-        config = AutoConfig.from_pretrained(args.config_name)
+        config = RobertaConfig.from_pretrained(args.config_name)
     elif args.model_name:
-        config = AutoConfig.from_pretrained(args.model_name)
+        config = RobertaConfig.from_pretrained(args.model_name)
     else:
         config = CONFIG_MAPPING[args.model_type]()
         logger.warning("You are instantiating a new config instance from scratch.")
+    config.num_labels = 1
+    config.problem_type = "multi_label_classification"
     
     if args.tokenizer_name:
-        tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_name, use_fast=True, do_lower_case=True)
+        tokenizer = RobertaTokenizerFast.from_pretrained(args.tokenizer_name)
     elif args.model_name:
-        tokenizer = AutoTokenizer.from_pretrained(args.model_name, use_fast=True, do_lower_case=True)
+        tokenizer = RobertaTokenizerFast.from_pretrained(args.model_name)
     else:
         raise ValueError(
             "You are instantiating a new tokenizer from scratch. This is not supported by this script."
@@ -114,10 +118,10 @@ if __name__ == "__main__":
     tokenizer.save_pretrained(args.saved_dir)
 
     if args.model_name:
-        model = AutoModelForMultipleChoice.from_pretrained(args.model_name, config=config)
+        model = RobertaForSequenceClassification.from_pretrained(args.model_name, config=config)
     else:
         logger.info("Training new model from scratch")
-        model = AutoModelForMultipleChoice.from_config(config)
+        model = RobertaForSequenceClassification.from_config(config)
 
 
 # Load and preprocess the datasets
@@ -129,8 +133,8 @@ if __name__ == "__main__":
     args.id_col = "id"
     args.dial_id_col = "dial_id"
     args.utter_col = "utterances"
-    args.service_col = "service_desc"
-    args.slot_col = "slot_desc"
+    args.service_desc_col = "service_desc"
+    args.slot_desc_col = "slot_desc"
     args.value_col = "value"
     args.label_col = "label"
     args.start_col = "start"
@@ -156,10 +160,11 @@ if __name__ == "__main__":
             num_proc=4,
             remove_columns=cols,
         )
+    
 
 # Create DataLoaders
-    weights, sampling_num = get_balance_params(train_dataset["labels"], args.neg_ratio)
-    sampler = WeightedRandomSampler(weights, sampling_num, replacement=False)
+    weights = get_balance_weights(train_dataset["labels"], args.neg_ratio)
+    sampler = WeightedRandomSampler(weights, len(train_dataset), replacement=True)
     data_collator = default_data_collator
     train_dataloader = DataLoader(train_dataset, sampler=sampler, collate_fn=data_collator, 
                                     batch_size=args.train_batch_size, num_workers=4)
@@ -167,16 +172,6 @@ if __name__ == "__main__":
         data_collator = default_data_collator
         valid_dataloader = DataLoader(valid_dataset, collate_fn=data_collator, 
                                     batch_size=args.valid_batch_size, num_workers=4)
-    
-    for e in range(3):
-        pos_count, total_count = 0, 0
-        for step, data in enumerate(train_dataloader, 1):
-            if step == 1:
-                print(data["labels"])
-            pos_count += data["labels"].sum().item()
-            total_count += data["labels"].shape[0]
-        print(pos_count / total_count)
-    exit()
     
 # Optimizer
 # Split weights in two groups, one with weight decay and the other not.
@@ -212,7 +207,6 @@ if __name__ == "__main__":
         num_warmup_steps=int(args.max_update_steps * args.warmup_ratio),
         num_training_steps=args.max_update_steps,
     )
-    
 
 # Train!
     total_train_batch_size = args.train_batch_size * accelerator.num_processes * args.grad_accum_steps
@@ -225,7 +219,7 @@ if __name__ == "__main__":
     logger.info(f"Update steps per epoch = {update_steps_per_epoch}")
     logger.info(f"Total update steps = {args.max_update_steps}")
     
-    max_valid_acc = 0
+    max_valid_jga = 0
     for epoch in range(args.epoch_num):
         logger.info("\nEpoch {:02d} / {:02d}".format(epoch + 1, args.epoch_num))
         total_loss = 0
@@ -243,6 +237,7 @@ if __name__ == "__main__":
             
         # Update model parameters
             if step % args.grad_accum_steps == 0 or step == len(train_dataloader):
+                clip_grad_norm_(model.parameters(), max_norm=args.grad_max_norm)
                 optimizer.step()
                 lr_scheduler.step()
                 optimizer.zero_grad()
@@ -251,7 +246,7 @@ if __name__ == "__main__":
                 logger.info("Train | Loss: {:.5f}".format(total_loss / step))
         # Evaluate!
             if args.valid_file and (step % args.eval_steps == 0 or step == len(train_dataloader)):
-                valid_dataset.set_format(columns=["attention_mask", "input_ids", "token_type_ids"])
+                valid_dataset.set_format(columns=["attention_mask", "input_ids"])
                 model.eval()
                 all_logits = []
                 for step, data in enumerate(valid_dataloader):
@@ -262,15 +257,19 @@ if __name__ == "__main__":
                 outputs_numpy = np.concatenate(all_logits, axis=0)
 
                 valid_dataset.set_format(columns=list(valid_dataset.features.keys()))
-                predictions = post_processing_function(valid_examples, valid_dataset, outputs_numpy, args)
-                valid_acc = metrics.compute(predictions=predictions.predictions, references=predictions.label_ids)
-                logger.info("Valid | Acc: {:.5f}".format(valid_acc))
-                if valid_acc >= max_valid_acc:
-                    max_valid_acc = valid_acc
+                predictions, references = post_processing_function(valid_examples, valid_dataset, outputs_numpy, args)
+                eval_results = compute_metrics(predictions, references, \
+                                            valid_examples[args.id_col], valid_examples[args.dial_id_col])
+                logger.info("Valid | MGA: {:.5f}, JGA: {:.5f}".format( \
+                                eval_results["mga"], eval_results["jga"]))
+                valid_jga = eval_results["jga"]
+                if valid_jga >= max_valid_jga:
+                    max_valid_jga = valid_jga
                     accelerator.wait_for_everyone()
                     unwrapped_model = accelerator.unwrap_model(model)
                     unwrapped_model.save_pretrained(args.saved_dir, save_function=accelerator.save)
                     logger.info("Saving config and model to {}...".format(args.saved_dir))
+    
     if not args.valid_file:
         accelerator.wait_for_everyone()
         unwrapped_model = accelerator.unwrap_model(model)

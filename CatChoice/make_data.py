@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dial_dir", required=True, type=str)
     parser.add_argument("-s", "--schema_file", required=True, type=str)
     parser.add_argument("-o", "--out_file", required=True, type=str)
+    parser.add_argument("-l", "--with_labels", action="store_true")
     args = parser.parse_args()
 
     with open(args.schema_file, 'r') as rf:
@@ -41,6 +42,7 @@ if __name__ == "__main__":
             cat_poss_values[service][slot] = poss_values
 
     data = []
+    total_slots_count = 0
     for fn in sorted(glob.glob(os.path.join(args.dial_dir, "dialogues_*.json"))):
         with open(fn, 'r') as rf:
             dials = json.load(rf)
@@ -51,12 +53,10 @@ if __name__ == "__main__":
             utterances = ''
             states_record = {service: dict() for service in services}
             bounds_record = {service: defaultdict(dict) for service in services}
-            with_labels = False
             for turn in dial["turns"]:
                 utterances += turn["speaker"].strip().capitalize() + ": "
                 utterance = turn["utterance"]
-                if "frames" in turn:
-                    with_labels = True
+                if args.with_labels:
                     for frame in turn["frames"]:
                         service = frame["service"]
                         if service not in states_record:
@@ -85,35 +85,37 @@ if __name__ == "__main__":
 
                 utterances += utterance + ' '
 
-            if with_labels:
-                for service in services:
-                    service_desc = cat_descriptions[service]["service_desc"]
-                    states = states_record[service]
-                    for slot, poss_values in sorted(cat_poss_values[service].items()):
-                        slot_desc = cat_descriptions[service]["slot_descs"][slot]
+            for service in services:
+                service_desc = cat_descriptions[service]["service_desc"]
+                states = states_record[service]
+                for slot, poss_values in sorted(cat_poss_values[service].items()):
+                    slot_desc = cat_descriptions[service]["slot_descs"][slot]
+                    if args.with_labels:
                         true_values = set(states.get(slot, ["unknown"]))
                         bounds = bounds_record[service][slot]
-                        for poss_value in poss_values:
+                    for poss_value in poss_values:
+                        if args.with_labels:
                             label = int(poss_value in true_values)
                             start, end = bounds.get(poss_value, (-1, -1))
                             if (start, end) == (-1, -1) and label == 1 and poss_value != "unknown":
                                 print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, poss_value))
                                 continue
-                            data.append({"id": len(data),
-                                        "dial_id": dial_id,
-                                        "utterances": utterances,
-                                        "service": service,
-                                        "service_desc": service_desc,
-                                        "slot": slot,
-                                        "slot_desc": slot_desc,
-                                        "value": poss_value,
-                                        "label": label,
-                                        "start": start,
-                                        "end": end})
+                        else:
+                            label = -1
+                            start, end = -1, -1
+                        data.append({"id": total_slots_count,
+                                    "dial_id": dial_id,
+                                    "utterances": utterances,
+                                    "service": service,
+                                    "service_desc": service_desc,
+                                    "slot": slot,
+                                    "slot_desc": slot_desc,
+                                    "value": poss_value,
+                                    "label": label,
+                                    "start": start,
+                                    "end": end})
+                    total_slots_count += 1
                     
-            else:
-                raise NotImplementedError
-    
     pos_count = 0
     os.makedirs(os.path.dirname(os.path.abspath(args.out_file)), exist_ok=True)
     with open(args.out_file, 'w') as wf:
