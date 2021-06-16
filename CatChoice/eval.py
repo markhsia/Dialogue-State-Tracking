@@ -36,7 +36,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--valid_file", type=str, required=True)
     parser.add_argument("--target_dir", type=str, required=True)
-    parser.add_argument("--valid_batch_size", type=int, default=128)
+    parser.add_argument("--valid_batch_size", type=int, default=256)
     args = parser.parse_args()
     
     return args
