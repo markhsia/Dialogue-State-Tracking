@@ -26,8 +26,8 @@ if __name__ == "__main__":
                     if "state" in frame:
                         curr_state = frame["state"]["slot_values"]
                         for slot, values in curr_state.items():
+                            #gt[dial_id]["{}-{}".format(service, slot).lower()] = values[0].replace(',', '_').lower()    
                             gt[dial_id]["{}-{}".format(service, slot).lower()] = [v.replace(',', '_').lower() for v in values]
-    
     joint_correct_sum = 0
     joint_total_sum = 0
     with open(args.in_file, 'r') as f:
@@ -48,7 +48,9 @@ if __name__ == "__main__":
                 continue
             for s, v in slot_values:
                 if v not in gt[dial_id][s]:
-                    joint_count = 0
+                #if v != gt[dial_id][s]:
+                    joint_correct = 0
+                    break
             joint_correct_sum += joint_correct
     
     print("JGA = {:.5f}".format(joint_correct_sum / joint_total_sum))
