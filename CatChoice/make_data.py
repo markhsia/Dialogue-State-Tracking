@@ -17,7 +17,7 @@ def get_state_updates(prev_state, curr_state):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--dial_dir", required=True, type=str)
+    parser.add_argument("-d", "--dial_dirs", nargs='+', required=True, type=str)
     parser.add_argument("-s", "--schema_file", required=True, type=str)
     parser.add_argument("-o", "--out_file", required=True, type=str)
     parser.add_argument("-l", "--with_labels", action="store_true")
@@ -43,78 +43,81 @@ if __name__ == "__main__":
 
     data = []
     total_slots_count = 0
-    for fn in sorted(glob.glob(os.path.join(args.dial_dir, "dialogues_*.json"))):
-        with open(fn, 'r') as rf:
-            dials = json.load(rf)
-        
-        for dial in dials:
-            dial_id = dial["dialogue_id"]
-            services = dial["services"]
-            utterances = ''
-            states_record = {service: dict() for service in services}
-            bounds_record = {service: defaultdict(dict) for service in services}
-            for turn in dial["turns"]:
-                utterances += turn["speaker"].strip().capitalize() + ": "
-                utterance = turn["utterance"]
-                if args.with_labels:
-                    for frame in turn["frames"]:
-                        service = frame["service"]
-                        if service not in states_record:
-                            continue
-                        for act_chunk in frame["actions"]:
-                            slot = act_chunk["slot"]
-                            if slot not in cat_slots[service]:
-                                slot = "{}-{}".format(service, slot)
-                            if slot not in cat_slots[service]:
-                                continue
-                            if "values" in act_chunk:
-                                values = act_chunk["values"]
-                            else:
-                                values = [act_chunk["value"]]
-                            for value in values:
-                                bounds_record[service][slot][value] = (len(utterances), len(utterances) + len(utterance))
-                        if "state" in frame:
-                            curr_state = frame["state"]["slot_values"]
-                            state_updates = get_state_updates(states_record[service], curr_state)
-                            for slot, values in state_updates.items():
-                                for value in values:
-                                    if value not in bounds_record[service][slot]:
-                                        bounds_record[service][slot][value] = (len(utterances), \
-                                                                                len(utterances) + len(utterance))
-                            states_record[service] = curr_state
-
-                utterances += utterance + ' '
-
-            for service in services:
-                service_desc = cat_descriptions[service]["service_desc"]
-                states = states_record[service]
-                for slot, poss_values in sorted(cat_poss_values[service].items()):
-                    slot_desc = cat_descriptions[service]["slot_descs"][slot]
+    for dial_dir in args.dial_dirs:
+        for fn in sorted(glob.glob(os.path.join(dial_dir, "dialogues_*.json"))):
+            with open(fn, 'r') as rf:
+                dials = json.load(rf)
+            
+            for dial in dials:
+                dial_id = dial["dialogue_id"]
+                services = dial["services"]
+                utterances = ''
+                states_record = {service: dict() for service in services}
+                bounds_record = {service: defaultdict(dict) for service in services}
+                for turn in dial["turns"]:
+                    utterances += turn["speaker"].strip().capitalize() + ": "
+                    utterance = turn["utterance"]
                     if args.with_labels:
-                        true_values = set(states.get(slot, ["unknown"]))
-                        bounds = bounds_record[service][slot]
-                    for poss_value in poss_values:
-                        if args.with_labels:
-                            label = int(poss_value in true_values)
-                            start, end = bounds.get(poss_value, (-1, -1))
-                            if (start, end) == (-1, -1) and label == 1 and poss_value != "unknown":
-                                print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, poss_value))
+                        for frame in turn["frames"]:
+                            service = frame["service"]
+                            if service not in states_record:
                                 continue
-                        else:
-                            label = -1
-                            start, end = -1, -1
-                        data.append({"id": total_slots_count,
-                                    "dial_id": dial_id,
-                                    "utterances": utterances,
-                                    "service": service,
-                                    "service_desc": service_desc,
-                                    "slot": slot,
-                                    "slot_desc": slot_desc,
-                                    "value": poss_value,
-                                    "label": label,
-                                    "start": start,
-                                    "end": end})
-                    total_slots_count += 1
+                            for act_chunk in frame["actions"]:
+                                slot = act_chunk["slot"]
+                                if slot not in cat_slots[service]:
+                                    slot = "{}-{}".format(service, slot)
+                                if slot not in cat_slots[service]:
+                                    continue
+                                if "values" in act_chunk:
+                                    values = act_chunk["values"]
+                                else:
+                                    values = [act_chunk["value"]]
+                                for value in values:
+                                    bounds_record[service][slot][value] = (len(utterances), \
+                                                                        len(utterances) + len(utterance))
+                            if "state" in frame:
+                                curr_state = frame["state"]["slot_values"]
+                                state_updates = get_state_updates(states_record[service], curr_state)
+                                for slot, values in state_updates.items():
+                                    for value in values:
+                                        if value not in bounds_record[service][slot]:
+                                            bounds_record[service][slot][value] = (len(utterances), \
+                                                                                len(utterances) + len(utterance))
+                                states_record[service] = curr_state
+
+                    utterances += utterance + ' '
+
+                for service in services:
+                    service_desc = cat_descriptions[service]["service_desc"]
+                    states = states_record[service]
+                    for slot, poss_values in sorted(cat_poss_values[service].items()):
+                        slot_desc = cat_descriptions[service]["slot_descs"][slot]
+                        if args.with_labels:
+                            true_values = set(states.get(slot, ["unknown"]))
+                            bounds = bounds_record[service][slot]
+                        for poss_value in poss_values:
+                            if args.with_labels:
+                                label = int(poss_value in true_values)
+                                start, end = bounds.get(poss_value, (-1, -1))
+                                if (start, end) == (-1, -1) and label == 1 and poss_value != "unknown":
+                                    print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, \
+                                                                                    service, slot, poss_value))
+                                    continue
+                            else:
+                                label = -1
+                                start, end = -1, -1
+                            data.append({"id": total_slots_count,
+                                        "dial_id": dial_id,
+                                        "utterances": utterances,
+                                        "service": service,
+                                        "service_desc": service_desc,
+                                        "slot": slot,
+                                        "slot_desc": slot_desc,
+                                        "value": poss_value,
+                                        "label": label,
+                                        "start": start,
+                                        "end": end})
+                        total_slots_count += 1
                     
     pos_count = 0
     os.makedirs(os.path.dirname(os.path.abspath(args.out_file)), exist_ok=True)

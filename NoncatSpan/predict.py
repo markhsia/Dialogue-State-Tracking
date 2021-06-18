@@ -4,7 +4,6 @@ import json
 import argparse
 import logging
 import math
-from collections import defaultdict
 from functools import partial
 from time import strftime, localtime
 import datasets
@@ -162,7 +161,7 @@ if __name__ == "__main__":
         dial_mapping[example[args.id_col]] = example[args.dial_id_col]
         slot_mapping[example[args.id_col]] = "{}-{}".format(example[args.service_col], example[args.slot_col])
 
-    results = defaultdict(dict)
+    results = {dial_id: dict() for dial_id in test_examples[args.dial_id_col]}
     for id_, (active, value) in predictions.items():
         if active:
             results[dial_mapping[id_]][slot_mapping[id_]] = value

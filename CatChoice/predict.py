@@ -139,7 +139,7 @@ if __name__ == "__main__":
         else:
             slot_mapping[example[args.id_col]] = "{}-{}".format(example[args.service_col], example[args.slot_col])
 
-    results = defaultdict(dict)
+    results = {dial_id: dict() for dial_id in test_examples[args.dial_id_col]}
     for id_, value in predictions.items():
         if value != "unknown":
             results[dial_mapping[id_]][slot_mapping[id_]] = value
