@@ -1096,6 +1096,7 @@ Dataset json downloaded and prepared to /dhome/boewoei0123/.cache/huggingface/da
 06/18/2021 05:07:47 - INFO - __main__ -    Total update steps = 38746
 06/18/2021 05:07:47 - INFO - __main__ -    
 Epoch 01 / 01
+<<<<<<< HEAD
 06/18/2021 05:11:52 - INFO - __main__ -    Train | Loss: 0.69484
 06/18/2021 05:15:56 - INFO - __main__ -    Train | Loss: 0.69178
 06/18/2021 05:20:01 - INFO - __main__ -    Train | Loss: 0.60928
@@ -1171,3 +1172,190 @@ Model weights saved in ./saved/0618-0504/pytorch_model.bin
 06/18/2021 10:17:20 - INFO - __main__ -    Valid | MGA: 0.95285, JGA: 0.82069
 06/18/2021 10:21:26 - INFO - __main__ -    Train | Loss: 0.14187
 run.sh: line 4: 2781486 Killed                  python train.py --train_file task_data/train.jsonl --valid_file task_data/dev.jsonl --model_name roberta-large --lr 2e-5 --grad_accum_steps 4
+=======
+06/16/2021 06:03:45 - INFO - __main__ -    Train | Loss: 0.69496
+06/16/2021 06:07:39 - INFO - __main__ -    Train | Loss: 0.69431
+06/16/2021 06:11:31 - INFO - __main__ -    Train | Loss: 0.67214
+06/16/2021 06:15:26 - INFO - __main__ -    Train | Loss: 0.59740
+06/16/2021 06:19:21 - INFO - __main__ -    Train | Loss: 0.54142
+06/16/2021 06:23:17 - INFO - __main__ -    Train | Loss: 0.49873
+06/16/2021 06:27:11 - INFO - __main__ -    Train | Loss: 0.46158
+06/16/2021 06:31:17 - INFO - __main__ -    Train | Loss: 0.42997
+06/16/2021 06:35:41 - INFO - __main__ -    Train | Loss: 0.40227
+06/16/2021 06:40:08 - INFO - __main__ -    Train | Loss: 0.38103
+06/16/2021 06:44:34 - INFO - __main__ -    Train | Loss: 0.36337
+06/16/2021 06:48:59 - INFO - __main__ -    Train | Loss: 0.34532
+06/16/2021 06:53:23 - INFO - __main__ -    Train | Loss: 0.32854
+06/16/2021 06:57:48 - INFO - __main__ -    Train | Loss: 0.31430
+06/16/2021 07:02:14 - INFO - __main__ -    Train | Loss: 0.30129
+06/16/2021 07:06:39 - INFO - __main__ -    Train | Loss: 0.29028
+06/16/2021 07:11:04 - INFO - __main__ -    Train | Loss: 0.28040
+06/16/2021 07:15:30 - INFO - __main__ -    Train | Loss: 0.27066
+06/16/2021 07:19:27 - INFO - __main__ -    Train | Loss: 0.26204
+06/16/2021 07:23:21 - INFO - __main__ -    Train | Loss: 0.25466
+06/16/2021 07:27:15 - INFO - __main__ -    Train | Loss: 0.24896
+06/16/2021 07:31:09 - INFO - __main__ -    Train | Loss: 0.24210
+06/16/2021 07:35:03 - INFO - __main__ -    Train | Loss: 0.23531
+06/16/2021 07:38:57 - INFO - __main__ -    Train | Loss: 0.22914
+06/16/2021 07:42:52 - INFO - __main__ -    Train | Loss: 0.22398
+06/16/2021 07:46:46 - INFO - __main__ -    Train | Loss: 0.21903
+06/16/2021 07:50:40 - INFO - __main__ -    Train | Loss: 0.21427
+06/16/2021 07:54:34 - INFO - __main__ -    Train | Loss: 0.20982
+06/16/2021 07:58:27 - INFO - __main__ -    Train | Loss: 0.20562
+06/16/2021 08:02:20 - INFO - __main__ -    Train | Loss: 0.20165
+06/16/2021 08:06:13 - INFO - __main__ -    Train | Loss: 0.19803
+06/16/2021 08:10:06 - INFO - __main__ -    Train | Loss: 0.19453
+06/16/2021 08:34:35 - INFO - pred_utils -    Post-processing example predictions.
+06/16/2021 08:35:03 - INFO - pred_utils -    Post-processing example references.
+06/16/2021 08:35:09 - INFO - __main__ -    Valid | MGA: 0.95346, JGA: 0.82157
+Configuration saved in ./saved/0616-0556/config.json
+Model weights saved in ./saved/0616-0556/pytorch_model.bin
+06/16/2021 08:35:11 - INFO - __main__ -    Saving config and model to ./saved/0616-0556...
+06/16/2021 08:39:04 - INFO - __main__ -    Train | Loss: 0.19071
+06/16/2021 08:42:57 - INFO - __main__ -    Train | Loss: 0.18755
+06/16/2021 08:46:50 - INFO - __main__ -    Train | Loss: 0.18402
+06/16/2021 08:50:45 - INFO - __main__ -    Train | Loss: 0.18111
+06/16/2021 08:54:39 - INFO - __main__ -    Train | Loss: 0.17824
+06/16/2021 08:58:34 - INFO - __main__ -    Train | Loss: 0.17567
+06/16/2021 09:02:27 - INFO - __main__ -    Train | Loss: 0.17343
+06/16/2021 09:06:22 - INFO - __main__ -    Train | Loss: 0.17124
+06/16/2021 09:10:17 - INFO - __main__ -    Train | Loss: 0.16865
+06/16/2021 09:14:11 - INFO - __main__ -    Train | Loss: 0.16650
+06/16/2021 09:18:06 - INFO - __main__ -    Train | Loss: 0.16441
+06/16/2021 09:22:00 - INFO - __main__ -    Train | Loss: 0.16242
+06/16/2021 09:25:54 - INFO - __main__ -    Train | Loss: 0.16037
+06/16/2021 09:29:46 - INFO - __main__ -    Train | Loss: 0.15837
+06/16/2021 09:33:40 - INFO - __main__ -    Train | Loss: 0.15652
+06/16/2021 09:37:35 - INFO - __main__ -    Train | Loss: 0.15461
+06/16/2021 09:41:27 - INFO - __main__ -    Train | Loss: 0.15264
+06/16/2021 09:45:20 - INFO - __main__ -    Train | Loss: 0.15114
+06/16/2021 09:49:14 - INFO - __main__ -    Train | Loss: 0.14956
+06/16/2021 09:53:06 - INFO - __main__ -    Train | Loss: 0.14785
+06/16/2021 09:56:58 - INFO - __main__ -    Train | Loss: 0.14667
+06/16/2021 10:00:51 - INFO - __main__ -    Train | Loss: 0.14519
+06/16/2021 10:04:45 - INFO - __main__ -    Train | Loss: 0.14373
+06/16/2021 10:08:40 - INFO - __main__ -    Train | Loss: 0.14234
+06/16/2021 10:12:33 - INFO - __main__ -    Train | Loss: 0.14109
+06/16/2021 10:16:27 - INFO - __main__ -    Train | Loss: 0.13971
+06/16/2021 10:20:22 - INFO - __main__ -    Train | Loss: 0.13823
+06/16/2021 10:24:16 - INFO - __main__ -    Train | Loss: 0.13684
+06/16/2021 10:28:09 - INFO - __main__ -    Train | Loss: 0.13557
+06/16/2021 10:32:04 - INFO - __main__ -    Train | Loss: 0.13432
+06/16/2021 10:35:58 - INFO - __main__ -    Train | Loss: 0.13332
+06/16/2021 10:39:52 - INFO - __main__ -    Train | Loss: 0.13225
+06/16/2021 11:03:13 - INFO - pred_utils -    Post-processing example predictions.
+06/16/2021 11:03:47 - INFO - pred_utils -    Post-processing example references.
+06/16/2021 11:03:54 - INFO - __main__ -    Valid | MGA: 0.95951, JGA: 0.84130
+Configuration saved in ./saved/0616-0556/config.json
+Model weights saved in ./saved/0616-0556/pytorch_model.bin
+06/16/2021 11:03:59 - INFO - __main__ -    Saving config and model to ./saved/0616-0556...
+06/16/2021 11:07:53 - INFO - __main__ -    Train | Loss: 0.13119
+06/16/2021 11:11:47 - INFO - __main__ -    Train | Loss: 0.13004
+06/16/2021 11:15:40 - INFO - __main__ -    Train | Loss: 0.12913
+06/16/2021 11:19:34 - INFO - __main__ -    Train | Loss: 0.12823
+06/16/2021 11:23:28 - INFO - __main__ -    Train | Loss: 0.12729
+06/16/2021 11:27:20 - INFO - __main__ -    Train | Loss: 0.12624
+06/16/2021 11:31:13 - INFO - __main__ -    Train | Loss: 0.12521
+06/16/2021 11:35:06 - INFO - __main__ -    Train | Loss: 0.12438
+06/16/2021 11:39:00 - INFO - __main__ -    Train | Loss: 0.12337
+06/16/2021 11:42:54 - INFO - __main__ -    Train | Loss: 0.12256
+06/16/2021 11:46:47 - INFO - __main__ -    Train | Loss: 0.12169
+06/16/2021 11:50:40 - INFO - __main__ -    Train | Loss: 0.12086
+06/16/2021 11:54:34 - INFO - __main__ -    Train | Loss: 0.11995
+06/16/2021 11:58:29 - INFO - __main__ -    Train | Loss: 0.11908
+06/16/2021 12:02:23 - INFO - __main__ -    Train | Loss: 0.11815
+06/16/2021 12:06:16 - INFO - __main__ -    Train | Loss: 0.11731
+06/16/2021 12:10:11 - INFO - __main__ -    Train | Loss: 0.11664
+06/16/2021 12:14:06 - INFO - __main__ -    Train | Loss: 0.11595
+06/16/2021 12:17:59 - INFO - __main__ -    Train | Loss: 0.11531
+06/16/2021 12:21:52 - INFO - __main__ -    Train | Loss: 0.11461
+06/16/2021 12:25:46 - INFO - __main__ -    Train | Loss: 0.11395
+06/16/2021 12:29:39 - INFO - __main__ -    Train | Loss: 0.11313
+06/16/2021 12:33:33 - INFO - __main__ -    Train | Loss: 0.11243
+06/16/2021 12:37:23 - INFO - __main__ -    Train | Loss: 0.11184
+06/16/2021 12:41:11 - INFO - __main__ -    Train | Loss: 0.11115
+06/16/2021 12:45:02 - INFO - __main__ -    Train | Loss: 0.11049
+06/16/2021 12:48:57 - INFO - __main__ -    Train | Loss: 0.10977
+06/16/2021 12:52:52 - INFO - __main__ -    Train | Loss: 0.10910
+06/16/2021 12:56:46 - INFO - __main__ -    Train | Loss: 0.10842
+06/16/2021 13:00:39 - INFO - __main__ -    Train | Loss: 0.10786
+06/16/2021 13:04:32 - INFO - __main__ -    Train | Loss: 0.10731
+06/16/2021 13:08:25 - INFO - __main__ -    Train | Loss: 0.10675
+06/16/2021 13:31:45 - INFO - pred_utils -    Post-processing example predictions.
+06/16/2021 13:32:13 - INFO - pred_utils -    Post-processing example references.
+06/16/2021 13:32:19 - INFO - __main__ -    Valid | MGA: 0.96705, JGA: 0.87330
+Configuration saved in ./saved/0616-0556/config.json
+Model weights saved in ./saved/0616-0556/pytorch_model.bin
+06/16/2021 13:32:24 - INFO - __main__ -    Saving config and model to ./saved/0616-0556...
+06/16/2021 13:36:15 - INFO - __main__ -    Train | Loss: 0.10618
+06/16/2021 13:40:09 - INFO - __main__ -    Train | Loss: 0.10566
+06/16/2021 13:44:03 - INFO - __main__ -    Train | Loss: 0.10517
+06/16/2021 13:47:57 - INFO - __main__ -    Train | Loss: 0.10454
+06/16/2021 13:51:50 - INFO - __main__ -    Train | Loss: 0.10401
+06/16/2021 13:55:44 - INFO - __main__ -    Train | Loss: 0.10343
+06/16/2021 13:59:39 - INFO - __main__ -    Train | Loss: 0.10291
+06/16/2021 14:03:33 - INFO - __main__ -    Train | Loss: 0.10239
+06/16/2021 14:07:27 - INFO - __main__ -    Train | Loss: 0.10187
+06/16/2021 14:11:22 - INFO - __main__ -    Train | Loss: 0.10127
+06/16/2021 14:15:18 - INFO - __main__ -    Train | Loss: 0.10071
+06/16/2021 14:19:13 - INFO - __main__ -    Train | Loss: 0.10016
+06/16/2021 14:23:08 - INFO - __main__ -    Train | Loss: 0.09968
+06/16/2021 14:27:02 - INFO - __main__ -    Train | Loss: 0.09924
+06/16/2021 14:30:57 - INFO - __main__ -    Train | Loss: 0.09875
+06/16/2021 14:34:52 - INFO - __main__ -    Train | Loss: 0.09828
+06/16/2021 14:38:46 - INFO - __main__ -    Train | Loss: 0.09778
+06/16/2021 14:42:41 - INFO - __main__ -    Train | Loss: 0.09730
+06/16/2021 14:46:34 - INFO - __main__ -    Train | Loss: 0.09686
+06/16/2021 14:50:27 - INFO - __main__ -    Train | Loss: 0.09642
+06/16/2021 14:54:21 - INFO - __main__ -    Train | Loss: 0.09598
+06/16/2021 14:58:16 - INFO - __main__ -    Train | Loss: 0.09553
+06/16/2021 15:02:09 - INFO - __main__ -    Train | Loss: 0.09508
+06/16/2021 15:06:01 - INFO - __main__ -    Train | Loss: 0.09466
+06/16/2021 15:09:54 - INFO - __main__ -    Train | Loss: 0.09417
+06/16/2021 15:13:48 - INFO - __main__ -    Train | Loss: 0.09370
+06/16/2021 15:17:42 - INFO - __main__ -    Train | Loss: 0.09327
+06/16/2021 15:21:36 - INFO - __main__ -    Train | Loss: 0.09292
+06/16/2021 15:25:30 - INFO - __main__ -    Train | Loss: 0.09249
+06/16/2021 15:29:25 - INFO - __main__ -    Train | Loss: 0.09202
+06/16/2021 15:33:19 - INFO - __main__ -    Train | Loss: 0.09157
+06/16/2021 15:37:12 - INFO - __main__ -    Train | Loss: 0.09119
+06/16/2021 16:00:32 - INFO - pred_utils -    Post-processing example predictions.
+06/16/2021 16:01:00 - INFO - pred_utils -    Post-processing example references.
+06/16/2021 16:01:06 - INFO - __main__ -    Valid | MGA: 0.96713, JGA: 0.87637
+Configuration saved in ./saved/0616-0556/config.json
+Model weights saved in ./saved/0616-0556/pytorch_model.bin
+06/16/2021 16:01:11 - INFO - __main__ -    Saving config and model to ./saved/0616-0556...
+06/16/2021 16:05:05 - INFO - __main__ -    Train | Loss: 0.09076
+06/16/2021 16:08:59 - INFO - __main__ -    Train | Loss: 0.09038
+06/16/2021 16:12:53 - INFO - __main__ -    Train | Loss: 0.08999
+06/16/2021 16:16:48 - INFO - __main__ -    Train | Loss: 0.08960
+06/16/2021 16:20:42 - INFO - __main__ -    Train | Loss: 0.08927
+06/16/2021 16:24:36 - INFO - __main__ -    Train | Loss: 0.08890
+06/16/2021 16:28:29 - INFO - __main__ -    Train | Loss: 0.08854
+06/16/2021 16:32:24 - INFO - __main__ -    Train | Loss: 0.08812
+06/16/2021 16:36:15 - INFO - __main__ -    Train | Loss: 0.08775
+06/16/2021 16:40:09 - INFO - __main__ -    Train | Loss: 0.08737
+06/16/2021 16:44:02 - INFO - __main__ -    Train | Loss: 0.08697
+06/16/2021 16:47:56 - INFO - __main__ -    Train | Loss: 0.08661
+06/16/2021 16:51:50 - INFO - __main__ -    Train | Loss: 0.08625
+06/16/2021 16:55:44 - INFO - __main__ -    Train | Loss: 0.08586
+06/16/2021 16:59:38 - INFO - __main__ -    Train | Loss: 0.08549
+06/16/2021 17:03:32 - INFO - __main__ -    Train | Loss: 0.08514
+06/16/2021 17:07:24 - INFO - __main__ -    Train | Loss: 0.08477
+06/16/2021 17:11:17 - INFO - __main__ -    Train | Loss: 0.08448
+06/16/2021 17:15:10 - INFO - __main__ -    Train | Loss: 0.08416
+06/16/2021 17:19:03 - INFO - __main__ -    Train | Loss: 0.08382
+06/16/2021 17:22:57 - INFO - __main__ -    Train | Loss: 0.08351
+06/16/2021 17:26:50 - INFO - __main__ -    Train | Loss: 0.08321
+06/16/2021 17:30:44 - INFO - __main__ -    Train | Loss: 0.08290
+06/16/2021 17:34:38 - INFO - __main__ -    Train | Loss: 0.08255
+06/16/2021 17:38:31 - INFO - __main__ -    Train | Loss: 0.08230
+06/16/2021 17:42:24 - INFO - __main__ -    Train | Loss: 0.08201
+06/16/2021 17:46:14 - INFO - __main__ -    Train | Loss: 0.08175
+06/16/2021 18:09:33 - INFO - pred_utils -    Post-processing example predictions.
+06/16/2021 18:10:01 - INFO - pred_utils -    Post-processing example references.
+06/16/2021 18:10:07 - INFO - __main__ -    Valid | MGA: 0.96968, JGA: 0.88338
+Configuration saved in ./saved/0616-0556/config.json
+Model weights saved in ./saved/0616-0556/pytorch_model.bin
+06/16/2021 18:10:12 - INFO - __main__ -    Saving config and model to ./saved/0616-0556...
+>>>>>>> 8ddfa1640e655ff3e110249af052095aa011014d
