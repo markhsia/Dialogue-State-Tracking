@@ -21,7 +21,7 @@ def post_processing_function(examples, features, pred_logits, args, tokenizer, m
         end_n_top=model.config.end_n_top,
     )
 
-    references = {ex[args.id_col]: (ex[args.active_col], ex[args.values_col]) for ex in examples}
+    references = {ex[args.id_col]: (ex[args.active_col], ex[args.value_col]) for ex in examples}
 
     return predictions, references
 

@@ -62,27 +62,13 @@ if __name__ == "__main__":
                             service = frame["service"]
                             if service not in states_record:
                                 continue
-                            for act_chunk in frame["actions"]:
-                                slot = act_chunk["slot"]
-                                if slot not in cat_slots[service]:
-                                    slot = "{}-{}".format(service, slot)
-                                if slot not in cat_slots[service]:
-                                    continue
-                                if "values" in act_chunk:
-                                    values = act_chunk["values"]
-                                else:
-                                    values = [act_chunk["value"]]
-                                for value in values:
-                                    bounds_record[service][slot][value] = (len(utterances), \
-                                                                        len(utterances) + len(utterance))
                             if "state" in frame:
                                 curr_state = frame["state"]["slot_values"]
                                 state_updates = get_state_updates(states_record[service], curr_state)
                                 for slot, values in state_updates.items():
                                     for value in values:
-                                        if value not in bounds_record[service][slot]:
-                                            bounds_record[service][slot][value] = (len(utterances), \
-                                                                                len(utterances) + len(utterance))
+                                        bounds_record[service][slot][value] = (len(utterances), \
+                                                                        len(utterances) + len(utterance))
                                 states_record[service] = curr_state
 
                     utterances += utterance + ' '
@@ -93,12 +79,15 @@ if __name__ == "__main__":
                     for slot, poss_values in sorted(cat_poss_values[service].items()):
                         slot_desc = cat_descriptions[service]["slot_descs"][slot]
                         if args.with_labels:
-                            true_values = set(states.get(slot, ["unknown"]))
-                            bounds = bounds_record[service][slot]
+                            true_value = states.get(slot, ["unknown"])[0]
                         for poss_value in poss_values:
                             if args.with_labels:
-                                label = int(poss_value in true_values)
-                                start, end = bounds.get(poss_value, (-1, -1))
+                                if poss_value == true_value:
+                                    label = 1
+                                    start, end = bounds_record[service][slot].get(true_value, (-1, -1))
+                                else:
+                                    label = 0
+                                    start, end = -1, -1
                                 if (start, end) == (-1, -1) and label == 1 and poss_value != "unknown":
                                     print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, \
                                                                                     service, slot, poss_value))

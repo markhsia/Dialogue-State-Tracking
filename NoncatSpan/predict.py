@@ -92,7 +92,7 @@ if __name__ == "__main__":
     args.slot_col = "slot"
     args.slot_desc_col = "slot_desc"
     args.active_col = "active"
-    args.values_col = "values"
+    args.value_col = "value"
 
     test_examples = raw_datasets["test"]
     #test_examples = test_examples.select(range(10))
@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     results = {dial_id: dict() for dial_id in test_examples[args.dial_id_col]}
     for id_, (active, value) in predictions.items():
-        if active:
+        if active and len(value) > 0:
             results[dial_mapping[id_]][slot_mapping[id_]] = value
     with open(args.out_file, 'w') as f:
         json.dump(results, f)

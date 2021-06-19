@@ -40,9 +40,9 @@ def compute_value_ems(predictions, references, dial_id_mapping):
     for dial_id, ids in dial_id_mapping.items():
         joint_correct = 1
         for id_ in ids:
-            if references[id_][0] == 0:
+            if references[id_][0] == 0: # only consider active slots in this evaluation
                 continue
-            if predictions[id_][1].lower() not in [v.lower() for v in references[id_][1]]:
+            if predictions[id_][1].lower() != references[id_][1].lower():
                 joint_correct = 0
             else:
                 total_correct_sum += 1
@@ -58,7 +58,7 @@ def compute_goal_accs(predictions, references, dial_id_mapping):
         joint_correct = 1
         for id_ in ids:
             if predictions[id_][0] != references[id_][0] \
-                or predictions[id_][1].lower() not in [v.lower() for v in references[id_][1]]:
+                or predictions[id_][1].lower() != references[id_][1].lower():
                 joint_correct = 0
             else:
                 total_correct_sum += 1

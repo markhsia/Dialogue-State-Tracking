@@ -144,7 +144,6 @@ if __name__ == "__main__":
     args.start_col = "start"
     args.end_col = "end"
     args.value_col = "value"
-    args.values_col = "values"
 
     train_examples = raw_datasets["train"]
     #train_examples = train_examples.select(range(10))
@@ -169,9 +168,11 @@ if __name__ == "__main__":
 
 # Create DataLoaders
     data_collator = default_data_collator
-    train_dataloader = DataLoader(train_dataset, shuffle=True, collate_fn=data_collator, batch_size=args.train_batch_size)
+    train_dataloader = DataLoader(train_dataset, shuffle=True, collate_fn=data_collator,
+                            batch_size=args.train_batch_size, num_workers=4)
     if args.valid_file:
-        valid_dataloader = DataLoader(valid_dataset, collate_fn=data_collator, batch_size=args.valid_batch_size)
+        valid_dataloader = DataLoader(valid_dataset, collate_fn=data_collator, 
+                            batch_size=args.valid_batch_size, num_workers=4)
     
 # Optimizer
 # Split weights in two groups, one with weight decay and the other not.

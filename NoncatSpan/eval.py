@@ -92,7 +92,6 @@ if __name__ == "__main__":
     args.start_col = "start"
     args.end_col = "end"
     args.value_col = "value"
-    args.values_col = "values"
 
     valid_examples = raw_datasets["valid"]
     #valid_examples = valid_examples.select(range(10))
