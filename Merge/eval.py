@@ -10,9 +10,21 @@ random.seed(1114)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dial_dir", required=True, type=str)
+    parser.add_argument("-s", "--schema_file", required=True, type=str)
     parser.add_argument("-i", "--in_file", required=True, type=str)
     args = parser.parse_args()
     
+    with open(args.schema_file, 'r') as rf:
+        schema = json.load(rf)
+    noncat_slots = defaultdict(set)
+    for service_i, service_chunk in enumerate(schema):
+        service = service_chunk["service_name"]
+        for slot_i, slot_chunk in enumerate(service_chunk["slots"]):
+            if slot_chunk["is_categorical"]:
+                continue
+            slot = slot_chunk["name"]
+            noncat_slots[service].add(slot)
+
     gt = dict()
     dial_count = 0
     for fn in sorted(glob.glob(os.path.join(args.dial_dir, "dialogues_*.json"))):
@@ -34,10 +46,11 @@ if __name__ == "__main__":
                 for slot, values in slot_values.items():
                     values = [v.lower() for v in values]
                     value = values[0]
-                    for v in values:
-                        if v in utterances or v == "dontcare":
-                            value = v
-                            break
+                    if slot in noncat_slots[service]:
+                        for v in values:
+                            if v in utterances or v == "dontcare":
+                                value = v
+                                break
                     value = value.replace(',', '_')
                     gt_dict["{}-{}".format(service, slot).lower()] = value
             gt_list = []

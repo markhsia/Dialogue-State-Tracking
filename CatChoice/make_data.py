@@ -62,13 +62,27 @@ if __name__ == "__main__":
                             service = frame["service"]
                             if service not in states_record:
                                 continue
+                            for act_chunk in frame["actions"]:
+                                slot = act_chunk["slot"]
+                                if slot not in cat_slots[service]:
+                                    slot = "{}-{}".format(service, slot)
+                                if slot not in cat_slots[service]:
+                                    continue
+                                if "values" in act_chunk:
+                                    values = act_chunk["values"]
+                                else:
+                                    values = [act_chunk["value"]]
+                                for value in values:
+                                    bounds_record[service][slot][value] = (len(utterances), \
+                                                                        len(utterances) + len(utterance))
                             if "state" in frame:
                                 curr_state = frame["state"]["slot_values"]
                                 state_updates = get_state_updates(states_record[service], curr_state)
                                 for slot, values in state_updates.items():
                                     for value in values:
-                                        bounds_record[service][slot][value] = (len(utterances), \
-                                                                        len(utterances) + len(utterance))
+                                        if value not in bounds_record[service][slot]:
+                                            bounds_record[service][slot][value] = (len(utterances), \
+                                                                            len(utterances) + len(utterance))
                                 states_record[service] = curr_state
 
                     utterances += utterance + ' '
