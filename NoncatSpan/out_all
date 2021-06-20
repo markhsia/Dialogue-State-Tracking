@@ -482,3 +482,10 @@ Epoch 02 / 03
 06/20/2021 16:46:57 - INFO - __main__ -    Train | Loss: 0.05403
 06/20/2021 16:54:37 - INFO - __main__ -    Train | Loss: 0.05381
 06/20/2021 17:02:17 - INFO - __main__ -    Train | Loss: 0.05327
+06/20/2021 17:09:59 - INFO - __main__ -    Train | Loss: 0.05340
+06/20/2021 17:17:39 - INFO - __main__ -    Train | Loss: 0.05299
+06/20/2021 17:25:19 - INFO - __main__ -    Train | Loss: 0.05301
+06/20/2021 17:32:59 - INFO - __main__ -    Train | Loss: 0.05290
+06/20/2021 17:40:40 - INFO - __main__ -    Train | Loss: 0.05259
+06/20/2021 17:48:20 - INFO - __main__ -    Train | Loss: 0.05266
+06/20/2021 17:56:02 - INFO - __main__ -    Train | Loss: 0.05234

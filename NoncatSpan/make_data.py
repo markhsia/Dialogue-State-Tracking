@@ -3,6 +3,7 @@ import json
 import argparse
 import glob
 from collections import defaultdict
+from easynmt import EasyNMT
 import random
 
 random.seed(1114)
@@ -16,6 +17,15 @@ def get_state_updates(prev_state, curr_state):
 
     return state_updates
 
+def back_trans(texts, translator, mid_lang):
+    if mid_lang == "en":
+        return texts
+
+    texts = translator.translate(texts, source_lang="en", target_lang=mid_lang, batch_size=64)
+    texts = translator.translate(texts, source_lang=mid_lang, target_lang="en", batch_size=64)
+    
+    return texts
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dial_dirs", nargs='+', required=True, type=str)
@@ -23,23 +33,41 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out_file", required=True, type=str)
     parser.add_argument("-l", "--with_labels", action="store_true")
     parser.add_argument("--keep_no_matched", action="store_true")
+    parser.add_argument("-a", "--aug_ratio", default=0, type=float)
     args = parser.parse_args()
-
 
     with open(args.schema_file, 'r') as rf:
         schema = json.load(rf)
+    if args.aug_ratio > 0:
+        translator = EasyNMT("m2m_100_418M")   # or: EasyNMT('m2m_100_1.2B') 
+        lang_list = ["en", "es", "fr", "de"]
+    else:
+        translator = None
+        lang_list = ["en"]
     noncat_descriptions = defaultdict(dict)
+    ori_descs = []
+    desc_mappings = []
     for service_i, service_chunk in enumerate(schema):
         service = service_chunk["service_name"]
-        noncat_descriptions[service]["service_desc"] = service_chunk["description"]
+        ori_descs.append(service_chunk["description"])
+        desc_mappings.append((service, ))
         noncat_descriptions[service]["slot_descs"] = dict()
         for slot_i, slot_chunk in enumerate(service_chunk["slots"]):
             if slot_chunk["is_categorical"]:
                 continue
             slot = slot_chunk["name"]
-            noncat_descriptions[service]["slot_descs"][slot] = slot_chunk["description"]
+            ori_descs.append(slot_chunk["description"])
+            desc_mappings.append((service, slot))
 
-    
+    all_descs = zip(*[back_trans(ori_descs, translator, lang) for lang in lang_list])
+    print(list(all_descs))
+    for descs, desc_map in zip(all_descs, desc_mappings):
+        if len(desc_map) == 1:
+            noncat_descriptions[desc_map[0]]["service_descs"] = descs
+        else:
+            noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
+    exit()
+
     data = []
     for dial_dir in args.dial_dirs:
         for fn in sorted(glob.glob(os.path.join(dial_dir, "dialogues_*.json"))):
@@ -79,11 +107,17 @@ if __name__ == "__main__":
                     utterances += utterance + ' '
                  
                 for service in services:
-                    service_desc = noncat_descriptions[service]["service_desc"]
+                    if args.aug_ratio > 0 and random.random() < args.aug_ratio:
+                        service_desc = random.choice(noncat_descriptions[service]["service_descs"][1:])
+                    else:
+                        service_desc = noncat_descriptions[service]["service_descs"][0]
                     if args.with_labels:
                         states = states_record[service]
                     for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
-                        slot_desc = noncat_descriptions[service]["slot_descs"][slot]
+                        if args.aug_ratio > 0 and random.random() < args.aug_ratio:
+                            slot_desc = random.choice(noncat_descriptions[service]["slot_descs"][slot][1:])
+                        else:
+                            slot_desc = noncat_descriptions[service]["slot_descs"][slot][0]
                         if args.with_labels:
                             values = states.get(slot, [])
                             if len(values) > 0:
