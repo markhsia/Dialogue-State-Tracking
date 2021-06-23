@@ -270,8 +270,7 @@ if __name__ == "__main__":
                     unwrapped_model.save_pretrained(args.saved_dir, save_function=accelerator.save)
                     logger.info("Saving config and model to {}...".format(args.saved_dir))
     
-    if not args.valid_file:
-        accelerator.wait_for_everyone()
-        unwrapped_model = accelerator.unwrap_model(model)
-        unwrapped_model.save_pretrained(args.saved_dir, save_function=accelerator.save)
-        logger.info("Saving config and model to {}...".format(args.saved_dir))
+    accelerator.wait_for_everyone()
+    unwrapped_model = accelerator.unwrap_model(model)
+    unwrapped_model.save_pretrained(args.saved_dir, save_function=accelerator.save)
+    logger.info("Saving config and model to {}...".format(args.saved_dir))

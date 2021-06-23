@@ -112,7 +112,7 @@ if __name__ == "__main__":
     )
 
 # Evaluate!
-    logger.info("\n******** Running evaluating ********")
+    logger.info("\n******** Running predicting ********")
     logger.info(f"Num test examples = {len(test_dataset)}")
     test_dataset.set_format(columns=["attention_mask", "input_ids"])
     model.eval()

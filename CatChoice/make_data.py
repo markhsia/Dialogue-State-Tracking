@@ -3,6 +3,7 @@ import json
 import argparse
 import glob
 from collections import defaultdict
+from easynmt import EasyNMT
 import random
 
 random.seed(1114)
@@ -15,31 +16,61 @@ def get_state_updates(prev_state, curr_state):
 
     return state_updates
 
+def back_trans(texts, translator, mid_lang):
+    if mid_lang == "en":
+        return texts
+
+    texts = translator.translate(texts, source_lang="en", target_lang=mid_lang, batch_size=64)
+    texts = translator.translate(texts, source_lang=mid_lang, target_lang="en", batch_size=64)
+    
+    return texts
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--dial_dirs", nargs='+', required=True, type=str)
     parser.add_argument("-s", "--schema_file", required=True, type=str)
     parser.add_argument("-o", "--out_file", required=True, type=str)
     parser.add_argument("-l", "--with_labels", action="store_true")
+    parser.add_argument("-sp", "--shuffle_prob", default=0, type=float)
+    parser.add_argument("-a", "--aug_prob", default=0, type=float)
     args = parser.parse_args()
 
     with open(args.schema_file, 'r') as rf:
         schema = json.load(rf)
+    if args.aug_prob > 0:
+        translator = EasyNMT("m2m_100_418M")   # or: EasyNMT('m2m_100_1.2B') 
+        lang_list = ["en", "es", "de", "ru", "zh"]
+    else:
+        translator = None
+        lang_list = ["en"]
+    
     cat_descriptions = defaultdict(dict)
     cat_slots = defaultdict(set)
     cat_poss_values = defaultdict(dict)
+    ori_descs = []
+    desc_mappings = []
     for service_i, service_chunk in enumerate(schema):
         service = service_chunk["service_name"]
-        cat_descriptions[service]["service_desc"] = service_chunk["description"]
+        ori_descs.append(service_chunk["description"])
+        desc_mappings.append((service, ))
         cat_descriptions[service]["slot_descs"] = dict()
         for slot_i, slot_chunk in enumerate(service_chunk["slots"]):
             if not slot_chunk["is_categorical"]:
                 continue
             slot = slot_chunk["name"]
             cat_slots[service].add(slot)
-            cat_descriptions[service]["slot_descs"][slot] = slot_chunk["description"]
-            poss_values = ["unknown", "dontcare"] + slot_chunk["possible_values"]
+            ori_descs.append(slot_chunk["description"])
+            desc_mappings.append((service, slot))
+            poss_values = ["unknown", "dontcare"] + [v.lower() for v in slot_chunk["possible_values"]]
             cat_poss_values[service][slot] = poss_values
+    
+    all_descs = zip(*[back_trans(ori_descs, translator, lang) for lang in lang_list])
+    for descs, desc_map in zip(all_descs, desc_mappings):
+        if len(desc_map) == 1:
+            cat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
+        else:
+            cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
+
 
     data = []
     total_slots_count = 0
@@ -73,7 +104,7 @@ if __name__ == "__main__":
                                 else:
                                     values = [act_chunk["value"]]
                                 for value in values:
-                                    bounds_record[service][slot][value] = (len(utterances), \
+                                    bounds_record[service][slot][value.lower()] = (len(utterances), \
                                                                         len(utterances) + len(utterance))
                             if "state" in frame:
                                 curr_state = frame["state"]["slot_values"]
@@ -81,20 +112,29 @@ if __name__ == "__main__":
                                 for slot, values in state_updates.items():
                                     for value in values:
                                         if value not in bounds_record[service][slot]:
-                                            bounds_record[service][slot][value] = (len(utterances), \
+                                            bounds_record[service][slot][value.lower()] = (len(utterances), \
                                                                             len(utterances) + len(utterance))
                                 states_record[service] = curr_state
 
                     utterances += utterance + ' '
 
                 for service in services:
-                    service_desc = cat_descriptions[service]["service_desc"]
                     states = states_record[service]
                     for slot, poss_values in sorted(cat_poss_values[service].items()):
-                        slot_desc = cat_descriptions[service]["slot_descs"][slot]
                         if args.with_labels:
-                            true_value = states.get(slot, ["unknown"])[0]
+                            true_values = [v.lower() for v in states.get(slot, ["unknown"])]
+                            if random.random() < args.shuffle_prob:
+                                random.shuffle(true_values)
+                            true_value = true_values[0]
                         for poss_value in poss_values:
+                            if random.random() < args.aug_prob:
+                                service_desc = random.choice(cat_descriptions[service]["service_descs"][1:])
+                            else:
+                                service_desc = cat_descriptions[service]["service_descs"][0]
+                            if random.random() < args.aug_prob:
+                                slot_desc = random.choice(cat_descriptions[service]["slot_descs"][slot][1:])
+                            else:
+                                slot_desc = cat_descriptions[service]["slot_descs"][slot][0]
                             if args.with_labels:
                                 if poss_value == true_value:
                                     label = 1

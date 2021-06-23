@@ -33,17 +33,19 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out_file", required=True, type=str)
     parser.add_argument("-l", "--with_labels", action="store_true")
     parser.add_argument("--keep_no_matched", action="store_true")
-    parser.add_argument("-a", "--aug_ratio", default=0, type=float)
+    parser.add_argument("-sp", "--shuffle_prob", default=0, type=float)
+    parser.add_argument("-a", "--aug_prob", default=0, type=float)
     args = parser.parse_args()
 
     with open(args.schema_file, 'r') as rf:
         schema = json.load(rf)
-    if args.aug_ratio > 0:
+    if args.aug_prob > 0:
         translator = EasyNMT("m2m_100_418M")   # or: EasyNMT('m2m_100_1.2B') 
-        lang_list = ["en", "es", "fr", "de"]
+        lang_list = ["en", "es", "de", "ru", "zh"]
     else:
         translator = None
         lang_list = ["en"]
+    
     noncat_descriptions = defaultdict(dict)
     ori_descs = []
     desc_mappings = []
@@ -60,14 +62,12 @@ if __name__ == "__main__":
             desc_mappings.append((service, slot))
 
     all_descs = zip(*[back_trans(ori_descs, translator, lang) for lang in lang_list])
-    print(list(all_descs))
     for descs, desc_map in zip(all_descs, desc_mappings):
         if len(desc_map) == 1:
-            noncat_descriptions[desc_map[0]]["service_descs"] = descs
+            noncat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
         else:
-            noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
-    exit()
-
+            noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
+    
     data = []
     for dial_dir in args.dial_dirs:
         for fn in sorted(glob.glob(os.path.join(dial_dir, "dialogues_*.json"))):
@@ -107,25 +107,27 @@ if __name__ == "__main__":
                     utterances += utterance + ' '
                  
                 for service in services:
-                    if args.aug_ratio > 0 and random.random() < args.aug_ratio:
+                    if random.random() < args.aug_prob:
                         service_desc = random.choice(noncat_descriptions[service]["service_descs"][1:])
                     else:
                         service_desc = noncat_descriptions[service]["service_descs"][0]
                     if args.with_labels:
                         states = states_record[service]
                     for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
-                        if args.aug_ratio > 0 and random.random() < args.aug_ratio:
+                        if random.random() < args.aug_prob:
                             slot_desc = random.choice(noncat_descriptions[service]["slot_descs"][slot][1:])
                         else:
                             slot_desc = noncat_descriptions[service]["slot_descs"][slot][0]
                         if args.with_labels:
-                            values = states.get(slot, [])
+                            values = [v.lower() for v in states.get(slot, [])]
                             if len(values) > 0:
                                 active, start, end = 1, -1, -1
+                                if random.random() < args.shuffle_prob:
+                                    random.shuffle(values)
                                 value = values[0]
                                 slot_position = slot_positions[service][slot]
                                 for v in values:
-                                    bounds = bounds_record.get(v.lower(), [])
+                                    bounds = bounds_record.get(v, [])
                                     if len(bounds) > 0:
                                         start, end = min(bounds, key=lambda i: (abs((i[0] + i[1]) // 2 - slot_position), i))
                                         value = v
@@ -137,7 +139,7 @@ if __name__ == "__main__":
                                     else:
                                         continue
                                 
-                                if (utterances[start: end].lower() != value.lower() and "dontcare" != value):
+                                if (utterances[start: end].lower() != value and "dontcare" != value):
                                     print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, value))
                                     if not args.keep_no_matched:
                                         continue

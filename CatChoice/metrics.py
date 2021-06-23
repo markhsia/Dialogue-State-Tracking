@@ -19,7 +19,7 @@ def compute_goal_accs(predictions, references, dial_id_mapping):
         joint_correct = 1
         for id_ in ids:
             assert len(references[id_]) == 1
-            if predictions[id_].lower() not in references[id_][0].lower():
+            if predictions[id_].lower() != references[id_][0].lower():
                 joint_correct = 0
             else:
                 total_correct_sum += 1
