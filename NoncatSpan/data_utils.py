@@ -127,17 +127,16 @@ def prepare_pred_features(examples, args, tokenizer):
             if s:
                 sequence_ids[k] = 3
         utter_idx = 1 if pad_on_right else 0
-
-        tokenized_examples["p_mask"].append(
-            [0.0 if (not special_tokens[i][k] and s == utter_idx) or k in [cls_index, sep_index] else 1.0
+        
+        p_mask = [0.0 if (not special_tokens[i][k] and s == utter_idx) or k in [cls_index, sep_index] else 1.0
                 for k, s in enumerate(sequence_ids)]
-        )
+        tokenized_examples["p_mask"].append(p_mask)
 
         sample_index = sample_mapping[i]
         tokenized_examples["example_id"].append(examples[args.id_col][sample_index])
 
         tokenized_examples["offset_mapping"][i] = [
-            (o if sequence_ids[k] == utter_idx else None)
+            (o if p_mask[k] == 0 else None)
             for k, o in enumerate(tokenized_examples["offset_mapping"][i])]
 
     return tokenized_examples

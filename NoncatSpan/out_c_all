@@ -1,0 +1,489 @@
+nohup: ignoring input
+Not matched: ../datasets/data/train/dialogues_096.json | SSNG0201.json | hotel | hotel-name | hobsons house
+Not matched: ../datasets/data/train/dialogues_097.json | MUL0152.json | taxi | taxi-departure | a and b guest house
+Not matched: ../datasets/data/train/dialogues_097.json | MUL0152.json | hotel | hotel-name | a and b guest house
+Not matched: ../datasets/data/train/dialogues_105.json | PMUL3484.json | taxi | taxi-departure | aylesbray lodge guest house
+Not matched: ../datasets/data/train/dialogues_105.json | SNG01373.json | taxi | taxi-arriveby | one o'clock p.m
+Not matched: ../datasets/data/train/dialogues_106.json | PMUL1303.json | bus | bus-departure | cambridge
+Not matched: ../datasets/data/train/dialogues_107.json | SNG01631.json | taxi | taxi-arriveby | ten o'clock a.m
+Not matched: ../datasets/data/train/dialogues_108.json | WOZ20245.json | restaurant | restaurant-name | pizza hut cherry hinton
+Not matched: ../datasets/data/train/dialogues_108.json | SSNG0367.json | hotel | hotel-name | a and b guest house
+Not matched: ../datasets/data/train/dialogues_112.json | SSNG0338.json | hotel | hotel-name | gonville hotel
+Not matched: ../datasets/data/train/dialogues_115.json | SNG01929.json | taxi | taxi-arriveby | three forty five p.m
+Not matched: ../datasets/data/train/dialogues_122.json | PMUL0192.json | hotel | hotel-name | rosas bed and breakfast
+Not matched: ../datasets/data/train/dialogues_124.json | MUL1356.json | taxi | taxi-departure | university arms hotel
+Not matched: ../datasets/data/train/dialogues_124.json | MUL1356.json | hotel | hotel-name | university arms hotel
+Not matched: ../datasets/data/train/dialogues_134.json | PMUL0208.json | hotel | hotel-name | worth house
+Not matched: ../datasets/data/train/dialogues_136.json | SSNG0348.json | hotel | hotel-name | archway house
+Not matched: ../datasets/data/train/dialogues_137.json | MUL0120.json | taxi | taxi-destination | efes restaurant
+Not matched: ../datasets/data/dev/dialogues_015.json | PMUL3979.json | taxi | taxi-destination | cambridge
+Not matched: ../datasets/data/dev/dialogues_017.json | SNG01172.json | restaurant | restaurant-name | efes restaurant
+0.4343301950033518
+06/24/2021 00:57:55 - INFO - __main__ -    Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+Use FP16 precision: False
+
+loading configuration file https://huggingface.co/xlnet-large-cased/resolve/main/config.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/1f0d5fc4143aa8fe332810bac98d442fed5483549adcd9656e5709cd470003a0.a0945cddd1ef8f9d9c40c35c36bad4908625533057baeeafc6d26a9550f18c60
+Model config XLNetConfig {
+  "architectures": [
+    "XLNetLMHeadModel"
+  ],
+  "attn_type": "bi",
+  "bi_data": false,
+  "bos_token_id": 1,
+  "clamp_len": -1,
+  "d_head": 64,
+  "d_inner": 4096,
+  "d_model": 1024,
+  "dropout": 0.1,
+  "end_n_top": 5,
+  "eos_token_id": 2,
+  "ff_activation": "gelu",
+  "initializer_range": 0.02,
+  "layer_norm_eps": 1e-12,
+  "mem_len": null,
+  "model_type": "xlnet",
+  "n_head": 16,
+  "n_layer": 24,
+  "pad_token_id": 5,
+  "reuse_len": null,
+  "same_length": false,
+  "start_n_top": 5,
+  "summary_activation": "tanh",
+  "summary_last_dropout": 0.1,
+  "summary_type": "last",
+  "summary_use_proj": true,
+  "task_specific_params": {
+    "text-generation": {
+      "do_sample": true,
+      "max_length": 250
+    }
+  },
+  "transformers_version": "4.6.0",
+  "untie_r": true,
+  "use_mems_eval": true,
+  "use_mems_train": false,
+  "vocab_size": 32000
+}
+
+loading file https://huggingface.co/xlnet-large-cased/resolve/main/spiece.model from cache at /dhome/boewoei0123/.cache/huggingface/transformers/3af982b422f8bb8c510fdd1112afe6f5ec3f3219ef859edcf4c3826bec14832e.d93497120e3a865e2970f26abdf7bf375896f97fde8b874b70909592a6c785c9
+loading file https://huggingface.co/xlnet-large-cased/resolve/main/tokenizer.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/6a4afd4829edeea0c7fe7735eccea233e66e79729e574966cfd9ec47f81d269a.2a683f915238b4f560dab0c724066cf0a7de9a851e96b0fb3a1e7f0881552f53
+loading file https://huggingface.co/xlnet-large-cased/resolve/main/added_tokens.json from cache at None
+loading file https://huggingface.co/xlnet-large-cased/resolve/main/special_tokens_map.json from cache at None
+loading file https://huggingface.co/xlnet-large-cased/resolve/main/tokenizer_config.json from cache at None
+06/24/2021 00:58:00 - INFO - __main__ -    Saving tokenizer to ./saved/0624-0057/tokenizer...
+tokenizer config file saved in ./saved/0624-0057/tokenizer_config.json
+Special tokens file saved in ./saved/0624-0057/special_tokens_map.json
+loading weights file https://huggingface.co/xlnet-large-cased/resolve/main/pytorch_model.bin from cache at /dhome/boewoei0123/.cache/huggingface/transformers/0c2b00a768ca7c5b3534b75606a47a7e1125b10ce354b217022de5a12029859c.7fff7afe180c24f31dabdb196f95ca2e26a8aa357c1db6137f4fec6430db9776
+Some weights of the model checkpoint at xlnet-large-cased were not used when initializing XLNetForQuestionAnswering: ['lm_loss.bias', 'lm_loss.weight']
+- This IS expected if you are initializing XLNetForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing XLNetForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of XLNetForQuestionAnswering were not initialized from the model checkpoint at xlnet-large-cased and are newly initialized: ['end_logits.dense_0.weight', 'end_logits.dense_0.bias', 'start_logits.dense.weight', 'answer_class.dense_1.weight', 'end_logits.dense_1.weight', 'answer_class.dense_0.bias', 'end_logits.dense_1.bias', 'start_logits.dense.bias', 'answer_class.dense_0.weight', 'end_logits.LayerNorm.bias', 'end_logits.LayerNorm.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+06/24/2021 00:58:06 - WARNING - datasets.builder -    Using custom data configuration default-ce597e0c2f93b18a
+0 tables [00:00, ? tables/s]1 tables [00:00,  2.34 tables/s]                                Downloading and preparing dataset json/default (download: Unknown size, generated: Unknown size, post-processed: Unknown size, total: Unknown size) to /dhome/boewoei0123/.cache/huggingface/datasets/json/default-ce597e0c2f93b18a/0.0.0/83d5b3a2f62630efc6b5315f00f20209b4ad91a00ac586597caee3a4da0bef02...
+Dataset json downloaded and prepared to /dhome/boewoei0123/.cache/huggingface/datasets/json/default-ce597e0c2f93b18a/0.0.0/83d5b3a2f62630efc6b5315f00f20209b4ad91a00ac586597caee3a4da0bef02. Subsequent calls will reuse this data.
+ #0:   0%|          | 0/50 [00:00<?, ?ba/s]
+ #1:   0%|          | 0/50 [00:00<?, ?ba/s][A
+
+ #2:   0%|          | 0/50 [00:00<?, ?ba/s][A[A
+
+
+ #3:   0%|          | 0/50 [00:00<?, ?ba/s][A[A[A #0:   2%|▏         | 1/50 [00:00<00:48,  1.01ba/s]
+
+
+ #3:   2%|▏         | 1/50 [00:01<00:49,  1.01s/ba][A[A[A
+
+ #2:   2%|▏         | 1/50 [00:01<00:58,  1.19s/ba][A[A
+ #1:   2%|▏         | 1/50 [00:01<01:19,  1.62s/ba][A #0:   4%|▍         | 2/50 [00:02<00:49,  1.02s/ba]
+
+
+ #3:   4%|▍         | 2/50 [00:02<00:50,  1.05s/ba][A[A[A
+
+ #2:   4%|▍         | 2/50 [00:02<01:00,  1.27s/ba][A[A #0:   6%|▌         | 3/50 [00:03<00:48,  1.03s/ba]
+
+
+ #3:   6%|▌         | 3/50 [00:03<00:48,  1.03s/ba][A[A[A
+ #1:   4%|▍         | 2/50 [00:03<01:19,  1.66s/ba][A
+
+ #2:   6%|▌         | 3/50 [00:03<00:57,  1.23s/ba][A[A #0:   8%|▊         | 4/50 [00:03<00:45,  1.02ba/s]
+
+
+ #3:   8%|▊         | 4/50 [00:04<00:47,  1.04s/ba][A[A[A
+ #1:   6%|▌         | 3/50 [00:04<01:12,  1.54s/ba][A #0:  10%|█         | 5/50 [00:04<00:42,  1.06ba/s]
+
+ #2:   8%|▊         | 4/50 [00:04<00:55,  1.20s/ba][A[A
+
+
+ #3:  10%|█         | 5/50 [00:05<00:46,  1.04s/ba][A[A[A
+ #1:   8%|▊         | 4/50 [00:05<01:04,  1.40s/ba][A
+
+ #2:  10%|█         | 5/50 [00:05<00:50,  1.12s/ba][A[A #0:  12%|█▏        | 6/50 [00:05<00:43,  1.01ba/s]
+
+
+ #3:  12%|█▏        | 6/50 [00:06<00:45,  1.03s/ba][A[A[A
+ #1:  10%|█         | 5/50 [00:06<00:58,  1.29s/ba][A
+
+ #2:  12%|█▏        | 6/50 [00:06<00:48,  1.10s/ba][A[A #0:  14%|█▍        | 7/50 [00:07<00:45,  1.05s/ba]
+
+
+ #3:  14%|█▍        | 7/50 [00:07<00:44,  1.04s/ba][A[A[A
+ #1:  12%|█▏        | 6/50 [00:07<00:52,  1.19s/ba][A
+
+ #2:  14%|█▍        | 7/50 [00:07<00:43,  1.02s/ba][A[A #0:  16%|█▌        | 8/50 [00:08<00:43,  1.04s/ba]
+
+
+ #3:  16%|█▌        | 8/50 [00:08<00:42,  1.02s/ba][A[A[A
+
+ #2:  16%|█▌        | 8/50 [00:08<00:41,  1.01ba/s][A[A
+ #1:  14%|█▍        | 7/50 [00:08<00:50,  1.17s/ba][A #0:  18%|█▊        | 9/50 [00:09<00:42,  1.04s/ba]
+
+
+ #3:  18%|█▊        | 9/50 [00:09<00:42,  1.03s/ba][A[A[A
+
+ #2:  18%|█▊        | 9/50 [00:09<00:41,  1.00s/ba][A[A
+ #1:  16%|█▌        | 8/50 [00:09<00:46,  1.10s/ba][A #0:  20%|██        | 10/50 [00:10<00:43,  1.08s/ba]
+
+
+ #3:  20%|██        | 10/50 [00:10<00:41,  1.04s/ba][A[A[A
+
+ #2:  20%|██        | 10/50 [00:10<00:40,  1.02s/ba][A[A
+ #1:  18%|█▊        | 9/50 [00:10<00:45,  1.11s/ba][A
+
+
+ #3:  22%|██▏       | 11/50 [00:11<00:39,  1.02s/ba][A[A[A #0:  22%|██▏       | 11/50 [00:11<00:43,  1.11s/ba]
+
+ #2:  22%|██▏       | 11/50 [00:11<00:38,  1.01ba/s][A[A
+ #1:  20%|██        | 10/50 [00:12<00:46,  1.16s/ba][A
+
+
+ #3:  24%|██▍       | 12/50 [00:12<00:39,  1.03s/ba][A[A[A #0:  24%|██▍       | 12/50 [00:12<00:41,  1.09s/ba]
+
+ #2:  24%|██▍       | 12/50 [00:13<00:41,  1.10s/ba][A[A
+
+
+ #3:  26%|██▌       | 13/50 [00:13<00:37,  1.01s/ba][A[A[A
+ #1:  22%|██▏       | 11/50 [00:13<00:46,  1.20s/ba][A #0:  26%|██▌       | 13/50 [00:13<00:40,  1.09s/ba]
+
+
+ #3:  28%|██▊       | 14/50 [00:14<00:36,  1.02s/ba][A[A[A
+
+ #2:  26%|██▌       | 13/50 [00:14<00:44,  1.21s/ba][A[A
+ #1:  24%|██▍       | 12/50 [00:14<00:46,  1.22s/ba][A #0:  28%|██▊       | 14/50 [00:14<00:39,  1.11s/ba]
+
+
+ #3:  30%|███       | 15/50 [00:15<00:34,  1.00ba/s][A[A[A
+
+ #2:  28%|██▊       | 14/50 [00:15<00:40,  1.13s/ba][A[A
+ #1:  26%|██▌       | 13/50 [00:15<00:41,  1.12s/ba][A #0:  30%|███       | 15/50 [00:15<00:38,  1.09s/ba]
+
+ #2:  30%|███       | 15/50 [00:16<00:37,  1.07s/ba][A[A
+
+
+ #3:  32%|███▏      | 16/50 [00:16<00:33,  1.00ba/s][A[A[A
+ #1:  28%|██▊       | 14/50 [00:16<00:41,  1.14s/ba][A #0:  32%|███▏      | 16/50 [00:17<00:39,  1.16s/ba]
+
+ #2:  32%|███▏      | 16/50 [00:17<00:35,  1.05s/ba][A[A
+
+
+ #3:  34%|███▍      | 17/50 [00:17<00:33,  1.00s/ba][A[A[A
+ #1:  30%|███       | 15/50 [00:18<00:40,  1.16s/ba][A #0:  34%|███▍      | 17/50 [00:18<00:38,  1.16s/ba]
+
+ #2:  34%|███▍      | 17/50 [00:18<00:34,  1.04s/ba][A[A
+
+
+ #3:  36%|███▌      | 18/50 [00:18<00:32,  1.01s/ba][A[A[A
+ #1:  32%|███▏      | 16/50 [00:19<00:38,  1.13s/ba][A
+
+ #2:  36%|███▌      | 18/50 [00:19<00:33,  1.04s/ba][A[A
+
+
+ #3:  38%|███▊      | 19/50 [00:19<00:31,  1.01s/ba][A[A[A #0:  36%|███▌      | 18/50 [00:19<00:37,  1.17s/ba]
+
+ #2:  38%|███▊      | 19/50 [00:20<00:32,  1.06s/ba][A[A #0:  38%|███▊      | 19/50 [00:20<00:34,  1.12s/ba]
+ #1:  34%|███▍      | 17/50 [00:20<00:40,  1.24s/ba][A
+
+
+ #3:  40%|████      | 20/50 [00:20<00:31,  1.04s/ba][A[A[A
+
+ #2:  40%|████      | 20/50 [00:21<00:31,  1.05s/ba][A[A
+
+
+ #3:  42%|████▏     | 21/50 [00:21<00:30,  1.04s/ba][A[A[A #0:  40%|████      | 20/50 [00:21<00:33,  1.12s/ba]
+ #1:  36%|███▌      | 18/50 [00:21<00:38,  1.20s/ba][A
+
+ #2:  42%|████▏     | 21/50 [00:22<00:30,  1.04s/ba][A[A
+
+
+ #3:  44%|████▍     | 22/50 [00:22<00:29,  1.05s/ba][A[A[A
+ #1:  38%|███▊      | 19/50 [00:22<00:37,  1.21s/ba][A #0:  42%|████▏     | 21/50 [00:23<00:34,  1.18s/ba]
+
+ #2:  44%|████▍     | 22/50 [00:23<00:27,  1.04ba/s][A[A
+
+
+ #3:  46%|████▌     | 23/50 [00:23<00:28,  1.05s/ba][A[A[A
+ #1:  40%|████      | 20/50 [00:23<00:34,  1.15s/ba][A #0:  44%|████▍     | 22/50 [00:24<00:31,  1.14s/ba]
+
+ #2:  46%|████▌     | 23/50 [00:24<00:26,  1.02ba/s][A[A
+ #1:  42%|████▏     | 21/50 [00:24<00:30,  1.07s/ba][A
+
+
+ #3:  48%|████▊     | 24/50 [00:24<00:27,  1.05s/ba][A[A[A #0:  46%|████▌     | 23/50 [00:25<00:29,  1.10s/ba]
+
+ #2:  48%|████▊     | 24/50 [00:25<00:27,  1.06s/ba][A[A
+
+
+ #3:  50%|█████     | 25/50 [00:25<00:25,  1.03s/ba][A[A[A
+ #1:  44%|████▍     | 22/50 [00:25<00:29,  1.06s/ba][A #0:  48%|████▊     | 24/50 [00:26<00:31,  1.20s/ba]
+ #1:  46%|████▌     | 23/50 [00:26<00:27,  1.02s/ba][A
+
+ #2:  50%|█████     | 25/50 [00:26<00:27,  1.11s/ba][A[A
+
+
+ #3:  52%|█████▏    | 26/50 [00:26<00:25,  1.06s/ba][A[A[A #0:  50%|█████     | 25/50 [00:27<00:29,  1.18s/ba]
+
+ #2:  52%|█████▏    | 26/50 [00:27<00:26,  1.10s/ba][A[A
+
+
+ #3:  54%|█████▍    | 27/50 [00:28<00:25,  1.09s/ba][A[A[A
+ #1:  48%|████▊     | 24/50 [00:28<00:30,  1.18s/ba][A #0:  52%|█████▏    | 26/50 [00:28<00:27,  1.13s/ba]
+
+ #2:  54%|█████▍    | 27/50 [00:28<00:25,  1.10s/ba][A[A
+
+
+ #3:  56%|█████▌    | 28/50 [00:29<00:23,  1.08s/ba][A[A[A #0:  54%|█████▍    | 27/50 [00:29<00:25,  1.10s/ba]
+ #1:  50%|█████     | 25/50 [00:30<00:34,  1.37s/ba][A
+
+ #2:  56%|█████▌    | 28/50 [00:30<00:24,  1.10s/ba][A[A
+
+
+ #3:  58%|█████▊    | 29/50 [00:30<00:23,  1.12s/ba][A[A[A #0:  56%|█████▌    | 28/50 [00:30<00:24,  1.10s/ba]
+
+ #2:  58%|█████▊    | 29/50 [00:31<00:23,  1.10s/ba][A[A
+
+
+ #3:  60%|██████    | 30/50 [00:31<00:24,  1.21s/ba][A[A[A
+ #1:  52%|█████▏    | 26/50 [00:31<00:35,  1.48s/ba][A #0:  58%|█████▊    | 29/50 [00:32<00:23,  1.14s/ba]
+
+ #2:  60%|██████    | 30/50 [00:32<00:21,  1.10s/ba][A[A
+
+
+ #3:  62%|██████▏   | 31/50 [00:32<00:23,  1.22s/ba][A[A[A
+
+ #2:  62%|██████▏   | 31/50 [00:33<00:20,  1.09s/ba][A[A
+ #1:  54%|█████▍    | 27/50 [00:33<00:36,  1.57s/ba][A #0:  60%|██████    | 30/50 [00:33<00:26,  1.34s/ba]
+
+
+ #3:  64%|██████▍   | 32/50 [00:34<00:23,  1.28s/ba][A[A[A
+
+ #2:  64%|██████▍   | 32/50 [00:34<00:19,  1.11s/ba][A[A
+ #1:  56%|█████▌    | 28/50 [00:34<00:30,  1.40s/ba][A #0:  62%|██████▏   | 31/50 [00:34<00:24,  1.27s/ba]
+
+
+ #3:  66%|██████▌   | 33/50 [00:35<00:21,  1.24s/ba][A[A[A
+
+ #2:  66%|██████▌   | 33/50 [00:35<00:18,  1.11s/ba][A[A #0:  64%|██████▍   | 32/50 [00:35<00:21,  1.19s/ba]
+ #1:  58%|█████▊    | 29/50 [00:36<00:29,  1.41s/ba][A
+
+
+ #3:  68%|██████▊   | 34/50 [00:36<00:19,  1.20s/ba][A[A[A
+
+ #2:  68%|██████▊   | 34/50 [00:36<00:17,  1.10s/ba][A[A #0:  66%|██████▌   | 33/50 [00:37<00:20,  1.22s/ba]
+ #1:  60%|██████    | 30/50 [00:37<00:29,  1.46s/ba][A
+
+ #2:  70%|███████   | 35/50 [00:37<00:16,  1.12s/ba][A[A
+
+
+ #3:  70%|███████   | 35/50 [00:37<00:18,  1.21s/ba][A[A[A #0:  68%|██████▊   | 34/50 [00:38<00:18,  1.18s/ba]
+
+ #2:  72%|███████▏  | 36/50 [00:38<00:15,  1.10s/ba][A[A
+ #1:  62%|██████▏   | 31/50 [00:39<00:27,  1.44s/ba][A
+
+
+ #3:  72%|███████▏  | 36/50 [00:39<00:16,  1.19s/ba][A[A[A #0:  70%|███████   | 35/50 [00:39<00:16,  1.11s/ba]
+
+ #2:  74%|███████▍  | 37/50 [00:40<00:14,  1.10s/ba][A[A
+ #1:  64%|██████▍   | 32/50 [00:40<00:25,  1.41s/ba][A
+
+
+ #3:  74%|███████▍  | 37/50 [00:40<00:16,  1.25s/ba][A[A[A #0:  72%|███████▏  | 36/50 [00:40<00:16,  1.15s/ba]
+
+ #2:  76%|███████▌  | 38/50 [00:41<00:13,  1.11s/ba][A[A #0:  74%|███████▍  | 37/50 [00:41<00:14,  1.14s/ba]
+
+
+ #3:  76%|███████▌  | 38/50 [00:41<00:15,  1.25s/ba][A[A[A
+ #1:  66%|██████▌   | 33/50 [00:42<00:25,  1.52s/ba][A
+
+ #2:  78%|███████▊  | 39/50 [00:42<00:12,  1.11s/ba][A[A #0:  76%|███████▌  | 38/50 [00:42<00:13,  1.12s/ba]
+
+
+ #3:  78%|███████▊  | 39/50 [00:42<00:13,  1.22s/ba][A[A[A
+
+ #2:  80%|████████  | 40/50 [00:43<00:11,  1.11s/ba][A[A
+ #1:  68%|██████▊   | 34/50 [00:43<00:23,  1.46s/ba][A
+
+
+ #3:  80%|████████  | 40/50 [00:43<00:11,  1.19s/ba][A[A[A #0:  78%|███████▊  | 39/50 [00:44<00:14,  1.28s/ba]
+
+ #2:  82%|████████▏ | 41/50 [00:44<00:09,  1.10s/ba][A[A
+ #1:  70%|███████   | 35/50 [00:44<00:20,  1.36s/ba][A
+
+
+ #3:  82%|████████▏ | 41/50 [00:45<00:10,  1.21s/ba][A[A[A
+ #1:  72%|███████▏  | 36/50 [00:45<00:17,  1.21s/ba][A
+
+ #2:  84%|████████▍ | 42/50 [00:45<00:08,  1.08s/ba][A[A #0:  80%|████████  | 40/50 [00:46<00:14,  1.44s/ba]
+
+
+ #3:  84%|████████▍ | 42/50 [00:46<00:09,  1.19s/ba][A[A[A
+ #1:  74%|███████▍  | 37/50 [00:46<00:14,  1.12s/ba][A
+
+ #2:  86%|████████▌ | 43/50 [00:46<00:07,  1.08s/ba][A[A
+ #1:  76%|███████▌  | 38/50 [00:47<00:12,  1.07s/ba][A #0:  82%|████████▏ | 41/50 [00:47<00:12,  1.42s/ba]
+
+ #2:  88%|████████▊ | 44/50 [00:47<00:06,  1.10s/ba][A[A
+
+
+ #3:  86%|████████▌ | 43/50 [00:47<00:08,  1.25s/ba][A[A[A
+ #1:  78%|███████▊  | 39/50 [00:48<00:11,  1.09s/ba][A #0:  84%|████████▍ | 42/50 [00:48<00:10,  1.35s/ba]
+
+ #2:  90%|█████████ | 45/50 [00:48<00:05,  1.09s/ba][A[A
+
+
+ #3:  88%|████████▊ | 44/50 [00:48<00:07,  1.20s/ba][A[A[A
+ #1:  80%|████████  | 40/50 [00:49<00:11,  1.14s/ba][A #0:  86%|████████▌ | 43/50 [00:49<00:08,  1.26s/ba]
+
+ #2:  92%|█████████▏| 46/50 [00:49<00:04,  1.09s/ba][A[A
+
+
+ #3:  90%|█████████ | 45/50 [00:49<00:05,  1.17s/ba][A[A[A #0:  88%|████████▊ | 44/50 [00:50<00:07,  1.19s/ba]
+ #1:  82%|████████▏ | 41/50 [00:50<00:10,  1.12s/ba][A
+
+ #2:  94%|█████████▍| 47/50 [00:50<00:03,  1.07s/ba][A[A
+
+
+ #3:  92%|█████████▏| 46/50 [00:50<00:04,  1.14s/ba][A[A[A #0:  90%|█████████ | 45/50 [00:51<00:05,  1.09s/ba]
+
+ #2:  96%|█████████▌| 48/50 [00:51<00:02,  1.06s/ba][A[A
+ #1:  84%|████████▍ | 42/50 [00:51<00:09,  1.14s/ba][A
+
+
+ #3:  94%|█████████▍| 47/50 [00:52<00:03,  1.13s/ba][A[A[A #0:  92%|█████████▏| 46/50 [00:52<00:04,  1.07s/ba]
+
+ #2:  98%|█████████▊| 49/50 [00:53<00:01,  1.08s/ba][A[A
+ #1:  86%|████████▌ | 43/50 [00:53<00:07,  1.13s/ba][A
+
+
+ #3:  96%|█████████▌| 48/50 [00:53<00:02,  1.10s/ba][A[A[A #0:  94%|█████████▍| 47/50 [00:53<00:03,  1.05s/ba]
+
+ #2: 100%|██████████| 50/50 [00:54<00:00,  1.06s/ba][A[A #2: 100%|██████████| 50/50 [00:54<00:00,  1.08s/ba]
+ #1:  88%|████████▊ | 44/50 [00:54<00:06,  1.10s/ba][A
+
+
+ #3:  98%|█████████▊| 49/50 [00:54<00:01,  1.10s/ba][A[A[A #0:  96%|█████████▌| 48/50 [00:54<00:02,  1.05s/ba]
+ #1:  90%|█████████ | 45/50 [00:55<00:05,  1.10s/ba][A
+
+
+ #3: 100%|██████████| 50/50 [00:55<00:00,  1.07s/ba][A[A[A #3: 100%|██████████| 50/50 [00:55<00:00,  1.10s/ba] #0:  98%|█████████▊| 49/50 [00:55<00:01,  1.09s/ba]
+ #1:  92%|█████████▏| 46/50 [00:56<00:04,  1.14s/ba][A #0: 100%|██████████| 50/50 [00:57<00:00,  1.12s/ba] #0: 100%|██████████| 50/50 [00:57<00:00,  1.14s/ba]
+ #1:  94%|█████████▍| 47/50 [00:57<00:03,  1.19s/ba][A
+ #1:  96%|█████████▌| 48/50 [00:58<00:02,  1.19s/ba][A
+ #1:  98%|█████████▊| 49/50 [00:59<00:01,  1.09s/ba][A
+ #1: 100%|██████████| 50/50 [01:00<00:00,  1.08s/ba][A #1: 100%|██████████| 50/50 [01:00<00:00,  1.22s/ba]
+
+
+
+06/24/2021 00:59:11 - INFO - __main__ -    
+******** Running training ********
+06/24/2021 00:59:11 - INFO - __main__ -    Num train examples = 214996
+06/24/2021 00:59:11 - INFO - __main__ -    Num Epochs = 3
+06/24/2021 00:59:11 - INFO - __main__ -    Instantaneous batch size per device = 4
+06/24/2021 00:59:11 - INFO - __main__ -    Total train batch size (w/ parallel, distributed & accumulation) = 64
+06/24/2021 00:59:11 - INFO - __main__ -    Instantaneous steps per epoch = 53749
+06/24/2021 00:59:11 - INFO - __main__ -    Update steps per epoch = 3360
+06/24/2021 00:59:11 - INFO - __main__ -    Total update steps = 10080
+06/24/2021 00:59:11 - INFO - __main__ -    
+Epoch 01 / 03
+06/24/2021 01:06:53 - INFO - __main__ -    Train | Loss: 6.72537
+06/24/2021 01:14:34 - INFO - __main__ -    Train | Loss: 5.44472
+06/24/2021 01:22:13 - INFO - __main__ -    Train | Loss: 4.37394
+06/24/2021 01:29:54 - INFO - __main__ -    Train | Loss: 3.68985
+06/24/2021 01:37:33 - INFO - __main__ -    Train | Loss: 3.13469
+06/24/2021 01:45:12 - INFO - __main__ -    Train | Loss: 2.70459
+06/24/2021 01:52:55 - INFO - __main__ -    Train | Loss: 2.38265
+06/24/2021 02:00:38 - INFO - __main__ -    Train | Loss: 2.13211
+06/24/2021 02:08:23 - INFO - __main__ -    Train | Loss: 1.93204
+06/24/2021 02:16:06 - INFO - __main__ -    Train | Loss: 1.76725
+06/24/2021 02:23:50 - INFO - __main__ -    Train | Loss: 1.63045
+06/24/2021 02:31:31 - INFO - __main__ -    Train | Loss: 1.51476
+06/24/2021 02:39:09 - INFO - __main__ -    Train | Loss: 1.41411
+06/24/2021 02:46:51 - INFO - __main__ -    Train | Loss: 1.32759
+06/24/2021 02:54:35 - INFO - __main__ -    Train | Loss: 1.25198
+06/24/2021 03:02:18 - INFO - __main__ -    Train | Loss: 1.18569
+06/24/2021 03:10:01 - INFO - __main__ -    Train | Loss: 1.12685
+06/24/2021 03:17:45 - INFO - __main__ -    Train | Loss: 1.07316
+06/24/2021 03:25:30 - INFO - __main__ -    Train | Loss: 1.02465
+06/24/2021 03:33:13 - INFO - __main__ -    Train | Loss: 0.98090
+06/24/2021 03:40:56 - INFO - __main__ -    Train | Loss: 0.94212
+06/24/2021 03:48:40 - INFO - __main__ -    Train | Loss: 0.90566
+06/24/2021 03:56:23 - INFO - __main__ -    Train | Loss: 0.87170
+06/24/2021 04:04:06 - INFO - __main__ -    Train | Loss: 0.84062
+06/24/2021 04:11:49 - INFO - __main__ -    Train | Loss: 0.81185
+06/24/2021 04:19:31 - INFO - __main__ -    Train | Loss: 0.78468
+06/24/2021 04:27:14 - INFO - __main__ -    Train | Loss: 0.76031
+06/24/2021 04:34:56 - INFO - __main__ -    Train | Loss: 0.73708
+06/24/2021 04:42:39 - INFO - __main__ -    Train | Loss: 0.71523
+06/24/2021 04:50:22 - INFO - __main__ -    Train | Loss: 0.69473
+06/24/2021 04:58:05 - INFO - __main__ -    Train | Loss: 0.67590
+06/24/2021 05:05:48 - INFO - __main__ -    Train | Loss: 0.65761
+06/24/2021 05:13:31 - INFO - __main__ -    Train | Loss: 0.64029
+06/24/2021 05:21:13 - INFO - __main__ -    Train | Loss: 0.62422
+06/24/2021 05:28:56 - INFO - __main__ -    Train | Loss: 0.60898
+06/24/2021 05:36:39 - INFO - __main__ -    Train | Loss: 0.59448
+06/24/2021 05:44:23 - INFO - __main__ -    Train | Loss: 0.58098
+06/24/2021 05:52:05 - INFO - __main__ -    Train | Loss: 0.56818
+06/24/2021 05:59:49 - INFO - __main__ -    Train | Loss: 0.55590
+06/24/2021 06:07:32 - INFO - __main__ -    Train | Loss: 0.54385
+06/24/2021 06:15:15 - INFO - __main__ -    Train | Loss: 0.53248
+06/24/2021 06:22:57 - INFO - __main__ -    Train | Loss: 0.52190
+06/24/2021 06:30:41 - INFO - __main__ -    Train | Loss: 0.51181
+06/24/2021 06:38:24 - INFO - __main__ -    Train | Loss: 0.50205
+06/24/2021 06:46:08 - INFO - __main__ -    Train | Loss: 0.49275
+06/24/2021 06:53:47 - INFO - __main__ -    Train | Loss: 0.48384
+06/24/2021 07:01:30 - INFO - __main__ -    Train | Loss: 0.47527
+06/24/2021 07:09:12 - INFO - __main__ -    Train | Loss: 0.46688
+06/24/2021 07:16:55 - INFO - __main__ -    Train | Loss: 0.45887
+06/24/2021 07:24:38 - INFO - __main__ -    Train | Loss: 0.45106
+06/24/2021 07:32:21 - INFO - __main__ -    Train | Loss: 0.44375
+06/24/2021 07:40:05 - INFO - __main__ -    Train | Loss: 0.43675
+06/24/2021 07:47:47 - INFO - __main__ -    Train | Loss: 0.42974
+06/24/2021 07:53:34 - INFO - __main__ -    Train | Loss: 0.42471
+06/24/2021 07:53:35 - INFO - __main__ -    
+Epoch 02 / 03
+06/24/2021 08:01:19 - INFO - __main__ -    Train | Loss: 0.07290
+06/24/2021 08:09:03 - INFO - __main__ -    Train | Loss: 0.06514
+06/24/2021 08:16:46 - INFO - __main__ -    Train | Loss: 0.06177
+06/24/2021 08:24:28 - INFO - __main__ -    Train | Loss: 0.06110
+06/24/2021 08:32:11 - INFO - __main__ -    Train | Loss: 0.06039
+06/24/2021 08:39:54 - INFO - __main__ -    Train | Loss: 0.05848
+06/24/2021 08:47:38 - INFO - __main__ -    Train | Loss: 0.05870
+06/24/2021 08:55:20 - INFO - __main__ -    Train | Loss: 0.05899
+06/24/2021 09:03:02 - INFO - __main__ -    Train | Loss: 0.05878
+06/24/2021 09:10:45 - INFO - __main__ -    Train | Loss: 0.05891
+06/24/2021 09:18:27 - INFO - __main__ -    Train | Loss: 0.05836
+06/24/2021 09:26:11 - INFO - __main__ -    Train | Loss: 0.05818
+06/24/2021 09:33:55 - INFO - __main__ -    Train | Loss: 0.05792
+06/24/2021 09:41:39 - INFO - __main__ -    Train | Loss: 0.05737
+06/24/2021 09:49:22 - INFO - __main__ -    Train | Loss: 0.05718
+06/24/2021 09:57:05 - INFO - __main__ -    Train | Loss: 0.05685
+06/24/2021 10:04:48 - INFO - __main__ -    Train | Loss: 0.05655
+06/24/2021 10:12:32 - INFO - __main__ -    Train | Loss: 0.05600
+06/24/2021 10:20:15 - INFO - __main__ -    Train | Loss: 0.05579
+06/24/2021 10:27:59 - INFO - __main__ -    Train | Loss: 0.05540
+06/24/2021 10:35:42 - INFO - __main__ -    Train | Loss: 0.05528
+06/24/2021 10:43:25 - INFO - __main__ -    Train | Loss: 0.05536
+06/24/2021 10:51:08 - INFO - __main__ -    Train | Loss: 0.05521
+06/24/2021 10:58:52 - INFO - __main__ -    Train | Loss: 0.05488

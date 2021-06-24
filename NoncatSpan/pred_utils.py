@@ -113,6 +113,8 @@ def postprocess_span_predictions_with_beam_search(
         pred_type = predictions[0]["pred_type"]
         if pred_active == 0:
             pred_text = ''
+        elif pred_type == "cls":
+            pred_active = 0
         elif pred_type == "sep":
             pred_text = "dontcare"
 

@@ -51,6 +51,8 @@ if __name__ == "__main__":
                             if v in utterances or v == "dontcare":
                                 value = v
                                 break
+                        if value == "dontcare":
+                            print(fn, dial_id, service, slot)
                     value = value.replace(',', '_')
                     gt_dict["{}-{}".format(service, slot).lower()] = value
             gt_list = []
