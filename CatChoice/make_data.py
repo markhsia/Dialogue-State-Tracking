@@ -126,9 +126,12 @@ if __name__ == "__main__":
                     for slot, poss_values in sorted(cat_poss_values[service].items()):
                         if args.with_labels:
                             true_values = [v.lower() for v in states.get(slot, ["unknown"])]
+                            a = true_values[0]
                             if random.random() < args.shuffle_prob:
                                 random.shuffle(true_values)
                             true_value = true_values[0]
+                            if len(true_values) > 0 and true_value != a:
+                                print(111)
                         for poss_value in poss_values:
                             if random.random() < args.aug_prob:
                                 service_desc = random.choice(cat_descriptions[service]["service_descs"][1:])

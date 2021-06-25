@@ -64,6 +64,8 @@ def postprocess_span_predictions_with_beam_search(
             end_log_prob = end_top_log_probs[feature_index]
             end_indexes = end_top_index[feature_index]
             active = int(cls_logits[feature_index] < 0)
+            if active == 0:
+                continue
             input_ids = features[feature_index]["input_ids"]
             cls_index = input_ids.index(tokenizer.cls_token_id)
             sep_index = input_ids.index(tokenizer.sep_token_id)
@@ -81,10 +83,12 @@ def postprocess_span_predictions_with_beam_search(
                         continue
                     if end_index < start_index or end_index - start_index + 1 > max_ans_len:
                         continue
+                    if start_index == cls_index or end_index == cls_index \
+                        or (start_index == sep_index and end_index != sep_index) \
+                        or (start_index != sep_index and end_index == sep_index):
+                        continue
                     
-                    if start_index == cls_index and end_index == cls_index:
-                        pred_type = "cls"
-                    elif start_index == sep_index and end_index == sep_index:
+                    if start_index == sep_index and end_index == sep_index:
                         pred_type = "sep"
                     else:
                         pred_type = "text"
@@ -111,11 +115,7 @@ def postprocess_span_predictions_with_beam_search(
         pred_active = predictions[0]["scores"][0]
         pred_text = predictions[0]["text"]
         pred_type = predictions[0]["pred_type"]
-        if pred_active == 0:
-            pred_text = ''
-        elif pred_type == "cls":
-            pred_active = 0
-        elif pred_type == "sep":
+        if pred_type == "sep":
             pred_text = "dontcare"
 
         all_predictions[example[args.id_col]] = (pred_active, pred_text)

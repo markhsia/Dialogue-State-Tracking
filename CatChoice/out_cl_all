@@ -1234,3 +1234,28 @@ Epoch 01 / 01
 06/24/2021 10:52:01 - INFO - __main__ -    Train | Loss: 0.09005
 06/24/2021 10:55:54 - INFO - __main__ -    Train | Loss: 0.08971
 06/24/2021 10:59:46 - INFO - __main__ -    Train | Loss: 0.08947
+06/24/2021 11:03:38 - INFO - __main__ -    Train | Loss: 0.08917
+06/24/2021 11:07:31 - INFO - __main__ -    Train | Loss: 0.08886
+06/24/2021 11:11:24 - INFO - __main__ -    Train | Loss: 0.08864
+06/24/2021 11:15:16 - INFO - __main__ -    Train | Loss: 0.08833
+06/24/2021 11:19:09 - INFO - __main__ -    Train | Loss: 0.08801
+06/24/2021 11:23:02 - INFO - __main__ -    Train | Loss: 0.08769
+06/24/2021 11:26:54 - INFO - __main__ -    Train | Loss: 0.08740
+06/24/2021 11:30:46 - INFO - __main__ -    Train | Loss: 0.08713
+06/24/2021 11:34:39 - INFO - __main__ -    Train | Loss: 0.08687
+06/24/2021 11:38:31 - INFO - __main__ -    Train | Loss: 0.08654
+06/24/2021 11:42:23 - INFO - __main__ -    Train | Loss: 0.08629
+06/24/2021 11:46:16 - INFO - __main__ -    Train | Loss: 0.08599
+06/24/2021 11:50:08 - INFO - __main__ -    Train | Loss: 0.08566
+06/24/2021 11:54:01 - INFO - __main__ -    Train | Loss: 0.08535
+06/24/2021 11:57:53 - INFO - __main__ -    Train | Loss: 0.08506
+06/24/2021 12:01:46 - INFO - __main__ -    Train | Loss: 0.08480
+06/24/2021 12:05:38 - INFO - __main__ -    Train | Loss: 0.08447
+06/24/2021 12:09:31 - INFO - __main__ -    Train | Loss: 0.08420
+06/24/2021 12:13:23 - INFO - __main__ -    Train | Loss: 0.08396
+06/24/2021 12:17:15 - INFO - __main__ -    Train | Loss: 0.08373
+06/24/2021 12:21:08 - INFO - __main__ -    Train | Loss: 0.08347
+06/24/2021 12:21:11 - INFO - __main__ -    Train | Loss: 0.08347
+Configuration saved in ./saved/0624-0056/config.json
+Model weights saved in ./saved/0624-0056/pytorch_model.bin
+06/24/2021 12:21:13 - INFO - __main__ -    Saving config and model to ./saved/0624-0056...
