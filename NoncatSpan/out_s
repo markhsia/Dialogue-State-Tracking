@@ -490,3 +490,113 @@ Epoch 02 / 03
 06/25/2021 17:31:08 - INFO - __main__ -    Train | Loss: 0.07878
 06/25/2021 17:38:54 - INFO - __main__ -    Train | Loss: 0.07804
 06/25/2021 17:46:38 - INFO - __main__ -    Train | Loss: 0.07776
+06/25/2021 17:54:22 - INFO - __main__ -    Train | Loss: 0.07752
+06/25/2021 18:02:07 - INFO - __main__ -    Train | Loss: 0.07686
+06/25/2021 18:09:50 - INFO - __main__ -    Train | Loss: 0.07626
+06/25/2021 18:17:35 - INFO - __main__ -    Train | Loss: 0.07572
+06/25/2021 18:25:19 - INFO - __main__ -    Train | Loss: 0.07599
+06/25/2021 18:33:03 - INFO - __main__ -    Train | Loss: 0.07522
+06/25/2021 18:40:47 - INFO - __main__ -    Train | Loss: 0.07484
+06/25/2021 18:48:31 - INFO - __main__ -    Train | Loss: 0.07435
+06/25/2021 18:56:16 - INFO - __main__ -    Train | Loss: 0.07467
+06/25/2021 19:04:00 - INFO - __main__ -    Train | Loss: 0.07455
+06/25/2021 19:11:43 - INFO - __main__ -    Train | Loss: 0.07402
+06/25/2021 19:19:27 - INFO - __main__ -    Train | Loss: 0.07374
+06/25/2021 19:27:12 - INFO - __main__ -    Train | Loss: 0.07344
+06/25/2021 19:34:56 - INFO - __main__ -    Train | Loss: 0.07325
+06/25/2021 19:42:40 - INFO - __main__ -    Train | Loss: 0.07280
+06/25/2021 19:50:24 - INFO - __main__ -    Train | Loss: 0.07254
+06/25/2021 19:58:07 - INFO - __main__ -    Train | Loss: 0.07247
+06/25/2021 20:28:30 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26864 features.
+06/25/2021 20:29:15 - INFO - __main__ -    Valid | MAA: 0.97820, JAA: 0.81922, MEM: 0.94672, JEM: 0.80090, MGA: 0.96218, JGA: 0.70033
+Configuration saved in ./saved/0625-0907/config.json
+Model weights saved in ./saved/0625-0907/pytorch_model.bin
+06/25/2021 20:29:19 - INFO - __main__ -    Saving config and model to ./saved/0625-0907...
+06/25/2021 20:37:04 - INFO - __main__ -    Train | Loss: 0.07192
+06/25/2021 20:44:47 - INFO - __main__ -    Train | Loss: 0.07177
+06/25/2021 20:52:31 - INFO - __main__ -    Train | Loss: 0.07178
+06/25/2021 21:00:15 - INFO - __main__ -    Train | Loss: 0.07178
+06/25/2021 21:07:59 - INFO - __main__ -    Train | Loss: 0.07137
+06/25/2021 21:15:42 - INFO - __main__ -    Train | Loss: 0.07108
+06/25/2021 21:23:27 - INFO - __main__ -    Train | Loss: 0.07106
+06/25/2021 21:31:11 - INFO - __main__ -    Train | Loss: 0.07103
+06/25/2021 21:38:55 - INFO - __main__ -    Train | Loss: 0.07094
+06/25/2021 21:46:39 - INFO - __main__ -    Train | Loss: 0.07081
+06/25/2021 21:54:23 - INFO - __main__ -    Train | Loss: 0.07063
+06/25/2021 22:02:06 - INFO - __main__ -    Train | Loss: 0.07041
+06/25/2021 22:09:50 - INFO - __main__ -    Train | Loss: 0.07016
+06/25/2021 22:17:34 - INFO - __main__ -    Train | Loss: 0.07008
+06/25/2021 22:25:19 - INFO - __main__ -    Train | Loss: 0.07008
+06/25/2021 22:33:02 - INFO - __main__ -    Train | Loss: 0.06990
+06/25/2021 22:40:47 - INFO - __main__ -    Train | Loss: 0.06973
+06/25/2021 22:48:31 - INFO - __main__ -    Train | Loss: 0.06978
+06/25/2021 22:56:15 - INFO - __main__ -    Train | Loss: 0.06954
+06/25/2021 23:03:58 - INFO - __main__ -    Train | Loss: 0.06939
+06/25/2021 23:11:43 - INFO - __main__ -    Train | Loss: 0.06929
+06/25/2021 23:19:26 - INFO - __main__ -    Train | Loss: 0.06904
+06/25/2021 23:19:39 - INFO - __main__ -    Train | Loss: 0.06904
+06/25/2021 23:50:00 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26864 features.
+06/25/2021 23:50:45 - INFO - __main__ -    Valid | MAA: 0.98147, JAA: 0.84976, MEM: 0.95403, JEM: 0.83265, MGA: 0.96573, JGA: 0.73127
+Configuration saved in ./saved/0625-0907/config.json
+Model weights saved in ./saved/0625-0907/pytorch_model.bin
+06/25/2021 23:50:50 - INFO - __main__ -    Saving config and model to ./saved/0625-0907...
+06/25/2021 23:50:50 - INFO - __main__ -    
+Epoch 03 / 03
+06/25/2021 23:58:36 - INFO - __main__ -    Train | Loss: 0.05186
+06/26/2021 00:06:19 - INFO - __main__ -    Train | Loss: 0.05085
+06/26/2021 00:14:03 - INFO - __main__ -    Train | Loss: 0.04987
+06/26/2021 00:21:47 - INFO - __main__ -    Train | Loss: 0.04910
+06/26/2021 00:29:31 - INFO - __main__ -    Train | Loss: 0.04932
+06/26/2021 00:37:15 - INFO - __main__ -    Train | Loss: 0.04909
+06/26/2021 00:44:59 - INFO - __main__ -    Train | Loss: 0.04834
+06/26/2021 00:52:43 - INFO - __main__ -    Train | Loss: 0.04748
+06/26/2021 01:00:28 - INFO - __main__ -    Train | Loss: 0.04717
+06/26/2021 01:08:12 - INFO - __main__ -    Train | Loss: 0.04726
+06/26/2021 01:15:56 - INFO - __main__ -    Train | Loss: 0.04713
+06/26/2021 01:23:39 - INFO - __main__ -    Train | Loss: 0.04693
+06/26/2021 01:31:22 - INFO - __main__ -    Train | Loss: 0.04668
+06/26/2021 01:39:06 - INFO - __main__ -    Train | Loss: 0.04657
+06/26/2021 01:46:50 - INFO - __main__ -    Train | Loss: 0.04665
+06/26/2021 01:54:35 - INFO - __main__ -    Train | Loss: 0.04671
+06/26/2021 02:02:18 - INFO - __main__ -    Train | Loss: 0.04659
+06/26/2021 02:10:02 - INFO - __main__ -    Train | Loss: 0.04653
+06/26/2021 02:17:46 - INFO - __main__ -    Train | Loss: 0.04666
+06/26/2021 02:25:29 - INFO - __main__ -    Train | Loss: 0.04656
+06/26/2021 02:33:12 - INFO - __main__ -    Train | Loss: 0.04619
+06/26/2021 02:40:55 - INFO - __main__ -    Train | Loss: 0.04605
+06/26/2021 02:48:38 - INFO - __main__ -    Train | Loss: 0.04611
+06/26/2021 02:56:21 - INFO - __main__ -    Train | Loss: 0.04579
+06/26/2021 03:04:05 - INFO - __main__ -    Train | Loss: 0.04566
+06/26/2021 03:34:28 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26864 features.
+06/26/2021 03:35:13 - INFO - __main__ -    Valid | MAA: 0.98147, JAA: 0.85016, MEM: 0.95543, JEM: 0.83347, MGA: 0.96752, JGA: 0.74267
+Configuration saved in ./saved/0625-0907/config.json
+Model weights saved in ./saved/0625-0907/pytorch_model.bin
+06/26/2021 03:35:18 - INFO - __main__ -    Saving config and model to ./saved/0625-0907...
+06/26/2021 03:43:01 - INFO - __main__ -    Train | Loss: 0.04555
+06/26/2021 03:50:46 - INFO - __main__ -    Train | Loss: 0.04575
+06/26/2021 03:58:30 - INFO - __main__ -    Train | Loss: 0.04547
+06/26/2021 04:06:14 - INFO - __main__ -    Train | Loss: 0.04544
+06/26/2021 04:13:57 - INFO - __main__ -    Train | Loss: 0.04523
+06/26/2021 04:21:40 - INFO - __main__ -    Train | Loss: 0.04529
+06/26/2021 04:29:24 - INFO - __main__ -    Train | Loss: 0.04502
+06/26/2021 04:37:08 - INFO - __main__ -    Train | Loss: 0.04492
+06/26/2021 04:44:52 - INFO - __main__ -    Train | Loss: 0.04482
+06/26/2021 04:52:36 - INFO - __main__ -    Train | Loss: 0.04468
+06/26/2021 05:00:20 - INFO - __main__ -    Train | Loss: 0.04466
+06/26/2021 05:08:03 - INFO - __main__ -    Train | Loss: 0.04459
+06/26/2021 05:15:46 - INFO - __main__ -    Train | Loss: 0.04456
+06/26/2021 05:23:30 - INFO - __main__ -    Train | Loss: 0.04456
+06/26/2021 05:31:13 - INFO - __main__ -    Train | Loss: 0.04455
+06/26/2021 05:38:56 - INFO - __main__ -    Train | Loss: 0.04454
+06/26/2021 05:46:40 - INFO - __main__ -    Train | Loss: 0.04434
+06/26/2021 05:54:24 - INFO - __main__ -    Train | Loss: 0.04430
+06/26/2021 06:02:06 - INFO - __main__ -    Train | Loss: 0.04429
+06/26/2021 06:09:50 - INFO - __main__ -    Train | Loss: 0.04418
+06/26/2021 06:17:34 - INFO - __main__ -    Train | Loss: 0.04412
+06/26/2021 06:25:18 - INFO - __main__ -    Train | Loss: 0.04421
+06/26/2021 06:25:31 - INFO - __main__ -    Train | Loss: 0.04420
+06/26/2021 06:55:53 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26864 features.
+06/26/2021 06:56:38 - INFO - __main__ -    Valid | MAA: 0.98179, JAA: 0.85627, MEM: 0.95815, JEM: 0.84121, MGA: 0.96756, JGA: 0.74145
+Configuration saved in ./saved/0625-0907/config.json
+Model weights saved in ./saved/0625-0907/pytorch_model.bin
+06/26/2021 06:56:43 - INFO - __main__ -    Saving config and model to ./saved/0625-0907...

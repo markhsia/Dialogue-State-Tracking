@@ -1,0 +1,58 @@
+nohup: ignoring input
+[nltk_data] Downloading package wordnet to
+[nltk_data]     /dhome/boewoei0123/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+0.1388492234429004
+[nltk_data] Downloading package wordnet to
+[nltk_data]     /dhome/boewoei0123/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+0.14171624458162035
+06/26/2021 19:48:20 - INFO - __main__ -    Distributed environment: NO
+Num processes: 1
+Process index: 0
+Local process index: 0
+Device: cuda
+Use FP16 precision: False
+
+loading configuration file https://huggingface.co/roberta-large/resolve/main/config.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/dea67b44b38d504f2523f3ddb6acb601b23d67bee52c942da336fa1283100990.94cae8b3a8dbab1d59b9d4827f7ce79e73124efa6bb970412cd503383a95f373
+Model config RobertaConfig {
+  "architectures": [
+    "RobertaForMaskedLM"
+  ],
+  "attention_probs_dropout_prob": 0.1,
+  "bos_token_id": 0,
+  "eos_token_id": 2,
+  "gradient_checkpointing": false,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "layer_norm_eps": 1e-05,
+  "max_position_embeddings": 514,
+  "model_type": "roberta",
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "pad_token_id": 1,
+  "position_embedding_type": "absolute",
+  "transformers_version": "4.6.0",
+  "type_vocab_size": 1,
+  "use_cache": true,
+  "vocab_size": 50265
+}
+
+loading file https://huggingface.co/roberta-large/resolve/main/vocab.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/7c1ba2435b05451bc3b4da073c8dec9630b22024a65f6c41053caccf2880eb8f.d67d6b367eb24ab43b08ad55e014cf254076934f71d832bbab9ad35644a375ab
+loading file https://huggingface.co/roberta-large/resolve/main/merges.txt from cache at /dhome/boewoei0123/.cache/huggingface/transformers/20b5a00a80e27ae9accbe25672aba42ad2d4d4cb2c4b9359b50ca8e34e107d6d.5d12962c5ee615a4c803841266e9c3be9a691a924f72d395d3a6c6c81157788b
+loading file https://huggingface.co/roberta-large/resolve/main/tokenizer.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/e16a2590deb9e6d73711d6e05bf27d832fa8c1162d807222e043ca650a556964.fc9576039592f026ad76a1c231b89aee8668488c671dfbe6616bab2ed298d730
+loading file https://huggingface.co/roberta-large/resolve/main/added_tokens.json from cache at None
+loading file https://huggingface.co/roberta-large/resolve/main/special_tokens_map.json from cache at None
+loading file https://huggingface.co/roberta-large/resolve/main/tokenizer_config.json from cache at None
+06/26/2021 19:48:27 - INFO - __main__ -    Saving tokenizer to ./saved/0626-1948/tokenizer...
+tokenizer config file saved in ./saved/0626-1948/tokenizer_config.json
+Special tokens file saved in ./saved/0626-1948/special_tokens_map.json
+loading weights file https://huggingface.co/roberta-large/resolve/main/pytorch_model.bin from cache at /dhome/boewoei0123/.cache/huggingface/transformers/8e36ec2f5052bec1e79e139b84c2c3089cb647694ba0f4f634fec7b8258f7c89.c43841d8c5cd23c435408295164cda9525270aa42cd0cc9200911570c0342352
+Some weights of the model checkpoint at roberta-large were not used when initializing RobertaForWDSequenceClassification: ['roberta.pooler.dense.bias', 'roberta.pooler.dense.weight', 'lm_head.dense.bias', 'lm_head.layer_norm.bias', 'lm_head.dense.weight', 'lm_head.bias', 'lm_head.layer_norm.weight', 'lm_head.decoder.weight']
+- This IS expected if you are initializing RobertaForWDSequenceClassification from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing RobertaForWDSequenceClassification from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of RobertaForWDSequenceClassification were not initialized from the model checkpoint at roberta-large and are newly initialized: ['classifier.dense.bias', 'classifier.dense.weight', 'classifier.out_proj.weight', 'classifier.out_proj.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.

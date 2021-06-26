@@ -2,8 +2,13 @@ import os
 import json
 import argparse
 import glob
-from collections import defaultdict
+from collections import defaultdict, Counter
 from easynmt import EasyNMT
+import string
+from num2words import num2words
+import nltk
+nltk.download("wordnet")
+from nltk.corpus import wordnet
 import random
 
 random.seed(1114)
@@ -24,6 +29,43 @@ def back_trans(texts, translator, mid_lang):
     texts = translator.translate(texts, source_lang=mid_lang, target_lang="en", batch_size=64)
     
     return texts
+
+def create_wide_features(dial_id, service_num, slot_type, slot_type_count, utterances, slot, value):
+    utterances = set(utterances.lower().translate(str.maketrans('', '', string.punctuation)).split())
+    features = [int('_' not in dial_id), int(service_num > 1), int(slot_type_count > 1)]
+    if slot_type == "num":
+        features += [1, 0, 0]
+        if value in ["unknown", "dontcare"]:
+            features += [0, 0, 0]
+        else:
+            value_syn = num2words(value, to="cardinal")
+            features += [1, int(value.lower() in utterances), int(value_syn.lower() in utterances)]
+    elif slot_type == "bool":
+        features += [0, 1, 0]
+        if value in ["unknown", "dontcare"]:
+            features += [0, 0, 0]
+        else:
+            slot_words = slot.split('_')
+            slot_words = [s[0] for s in nltk.pos_tag(slot_words) if s[1][:2] in ["NN", "JJ"]]
+            slot_syns = [l.name().replace('_', ' ') \
+                        for w in slot_words for syn_set in wordnet.synsets(w) for l in syn_set.lemmas()]
+            features += [1, int(any([s.lower() in utterances for s in slot_words])), \
+                        int(any([s.lower() in utterances for s in slot_syns]))]
+    elif slot_type == "text":
+        features += [0, 0, 1]
+        if value in ["unknown", "dontcare"]:
+            features += [0, 0, 0]
+        else:
+            value_syns = [l.name().replace('_', ' ') for syn_set in wordnet.synsets(value) for l in syn_set.lemmas()]
+            features += [1, int(value.lower() in utterances), \
+                        int(any([v.lower() in utterances for v in value_syns]))]
+    else:
+        raise NotImplementedError
+    
+    assert len(features) == 9
+
+    return features
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -46,6 +88,8 @@ if __name__ == "__main__":
     
     cat_descriptions = defaultdict(dict)
     cat_slots = defaultdict(set)
+    slot_types = defaultdict(dict)
+    slot_type_counts = defaultdict(Counter)
     cat_poss_values = defaultdict(dict)
     ori_descs = []
     desc_mappings = []
@@ -61,18 +105,28 @@ if __name__ == "__main__":
             cat_slots[service].add(slot)
             ori_descs.append(slot_chunk["description"])
             desc_mappings.append((service, slot))
-            #poss_values = ["unknown", "dontcare"] + slot_chunk["possible_values"]
-            poss_values = ["unknown", "dontcare"] + [v.lower() for v in slot_chunk["possible_values"]]
+            poss_values = slot_chunk["possible_values"]
+            #poss_values = [v.lower() for v in slot_chunk["possible_values"]]
+            if all([v.isnumeric() for v in poss_values]):
+                slot_types[service][slot] = "num"
+                slot_type_counts[service]["num"] += 1
+            elif sorted([v.lower() for v in poss_values]) == ["false", "true"]:
+                slot_types[service][slot] = "bool"
+                slot_type_counts[service]["bool"] += 1
+            else:
+                slot_types[service][slot]  = "text"
+                slot_type_counts[service]["text"] += 1
+            poss_values = ["unknown", "dontcare"] + poss_values
             cat_poss_values[service][slot] = poss_values
     
     all_descs = zip(*[back_trans(ori_descs, translator, lang) for lang in lang_list])
     for descs, desc_map in zip(all_descs, desc_mappings):
         if len(desc_map) == 1:
-            #cat_descriptions[desc_map[0]]["service_descs"] = descs
-            cat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
+            cat_descriptions[desc_map[0]]["service_descs"] = descs
+            #cat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
         else:
-            #cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
-            cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
+            cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
+            #cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
 
 
     data = []
@@ -152,9 +206,15 @@ if __name__ == "__main__":
                             else:
                                 label = -1
                                 start, end = -1, -1
+                            
+                            slot_type = slot_types[service][slot]
+                            wide_features = create_wide_features(dial_id, len(services), 
+                                                                slot_type, slot_type_counts[service][slot_type],
+                                                                utterances, slot, poss_value)
                             data.append({"id": total_slots_count,
                                         "dial_id": dial_id,
                                         "utterances": utterances,
+                                        "wide_features": wide_features,
                                         "service": service,
                                         "service_desc": service_desc,
                                         "slot": slot,

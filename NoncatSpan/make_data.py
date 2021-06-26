@@ -64,8 +64,10 @@ if __name__ == "__main__":
     all_descs = zip(*[back_trans(ori_descs, translator, lang) for lang in lang_list])
     for descs, desc_map in zip(all_descs, desc_mappings):
         if len(desc_map) == 1:
+            #noncat_descriptions[desc_map[0]]["service_descs"] = descs
             noncat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
         else:
+            #noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
             noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
     
     data = []

@@ -1,0 +1,6 @@
+all JGA = 0.69096
+noncat JGA = 0.76507
+cat JGA = 0.88338
+cat_num JGA = 0.96310
+cat_bool JGA = 0.95691
+cat_text JGA = 0.90649

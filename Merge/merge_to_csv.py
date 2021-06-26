@@ -22,7 +22,8 @@ def write_csv(ans, output_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--in_files", type=str, nargs='+', required=True)
-    parser.add_argument("--out_file", type=str, default="./results.csv")
+    parser.add_argument("--out_json", type=str)
+    parser.add_argument("--out_csv", type=str, default="./results.csv")
     args = parser.parse_args()
     
     all_results = defaultdict(dict)
@@ -32,4 +33,8 @@ if __name__ == "__main__":
         for k, v in results.items():
             all_results[k] = {**all_results[k], **v}
     
-    write_csv(all_results, args.out_file)
+    if args.out_json:
+        with open(args.out_json, 'w') as f:
+            json.dump(all_results, f)
+    
+    write_csv(all_results, args.out_csv)
