@@ -61,7 +61,7 @@ def parse_args():
     args = parser.parse_args()
     
     args.saved_dir = os.path.join(args.saved_dir, strftime("%m%d-%H%M", localtime()))
-    os.makedirs(args.saved_dir, exist_ok=True)
+    os.makedirs(args.saved_dir)
     
     return args
 

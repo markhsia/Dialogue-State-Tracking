@@ -26,7 +26,7 @@ from transformers import (
 
 from data_utils import *
 from pred_utils import *
-from models import RobertaForWDSequenceClassification
+from models import RobertaForSequenceWDClassification
 from metrics import compute_metrics
 
 logger = logging.getLogger(__name__)
@@ -57,7 +57,7 @@ def parse_args():
     args = parser.parse_args()
     
     args.saved_dir = os.path.join(args.saved_dir, strftime("%m%d-%H%M", localtime()))
-    os.makedirs(args.saved_dir, exist_ok=True)
+    os.makedirs(args.saved_dir)
     
     return args
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         logger.warning("You are instantiating a new config instance from scratch.")
     config.num_labels = 1
     config.problem_type = "multi_label_classification"
-    config.wide_size = 9
+    config.wide_size = 11
     
     if args.tokenizer_name:
         tokenizer = RobertaTokenizerFast.from_pretrained(args.tokenizer_name)
@@ -119,10 +119,10 @@ if __name__ == "__main__":
     tokenizer.save_pretrained(args.saved_dir)
 
     if args.model_name:
-        model = RobertaForWDSequenceClassification.from_pretrained(args.model_name, config=config)
+        model = RobertaForSequenceWDClassification.from_pretrained(args.model_name, config=config)
     else:
         logger.info("Training new model from scratch")
-        model = RobertaForWDSequenceClassification.from_config(config)
+        model = RobertaForSequenceWDClassification.from_config(config)
 
 
 # Load and preprocess the datasets

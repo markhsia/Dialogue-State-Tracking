@@ -33,6 +33,7 @@ if __name__ == "__main__":
     parser.add_argument("-l", "--with_labels", action="store_true")
     parser.add_argument("-sp", "--shuffle_prob", default=0, type=float)
     parser.add_argument("-a", "--aug_prob", default=0, type=float)
+    parser.add_argument("-n", "--norm", action="store_true")
     args = parser.parse_args()
 
     with open(args.schema_file, 'r') as rf:
@@ -61,18 +62,24 @@ if __name__ == "__main__":
             cat_slots[service].add(slot)
             ori_descs.append(slot_chunk["description"])
             desc_mappings.append((service, slot))
-            #poss_values = ["unknown", "dontcare"] + slot_chunk["possible_values"]
-            poss_values = ["unknown", "dontcare"] + [v.lower() for v in slot_chunk["possible_values"]]
+            if args.norm:
+                poss_values = ["unknown", "dontcare"] + [v.lower() for v in slot_chunk["possible_values"]]
+            else:
+                poss_values = ["unknown", "dontcare"] + slot_chunk["possible_values"]
             cat_poss_values[service][slot] = poss_values
     
     all_descs = zip(*[back_trans(ori_descs, translator, lang) for lang in lang_list])
     for descs, desc_map in zip(all_descs, desc_mappings):
         if len(desc_map) == 1:
-            #cat_descriptions[desc_map[0]]["service_descs"] = descs
-            cat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
+            if args.norm:
+                cat_descriptions[desc_map[0]]["service_descs"] = [desc.capitalize() for desc in descs]
+            else:
+                cat_descriptions[desc_map[0]]["service_descs"] = descs
         else:
-            #cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
-            cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
+            if args.norm:
+                cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
+            else:
+                cat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
 
 
     data = []

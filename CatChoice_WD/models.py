@@ -24,7 +24,7 @@ class RobertaWDClassificationHead(nn.Module):
         return x
 
 
-class RobertaForWDSequenceClassification(RobertaPreTrainedModel):
+class RobertaForSequenceWDClassification(RobertaPreTrainedModel):
     _keys_to_ignore_on_load_missing = [r"position_ids"]
 
     def __init__(self, config):
