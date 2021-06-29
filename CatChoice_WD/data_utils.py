@@ -75,7 +75,6 @@ def prepare_pred_features(examples, args, tokenizer):
                                                                             examples[args.slot_desc_col], \
                                                                             examples[args.value_col])]
 
-    
     tokenized_examples = tokenizer(
         first_sentences,
         second_sentences,

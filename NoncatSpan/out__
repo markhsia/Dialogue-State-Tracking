@@ -1,602 +1,0 @@
-nohup: ignoring input
-Not matched: ../datasets/data/train/dialogues_096.json | SSNG0201.json | hotel | hotel-name | hobsons house
-Not matched: ../datasets/data/train/dialogues_097.json | MUL0152.json | taxi | taxi-departure | a and b guest house
-Not matched: ../datasets/data/train/dialogues_097.json | MUL0152.json | hotel | hotel-name | a and b guest house
-Not matched: ../datasets/data/train/dialogues_105.json | PMUL3484.json | taxi | taxi-departure | aylesbray lodge guest house
-Not matched: ../datasets/data/train/dialogues_105.json | SNG01373.json | taxi | taxi-arriveby | one o'clock p.m
-Not matched: ../datasets/data/train/dialogues_106.json | PMUL1303.json | bus | bus-departure | cambridge
-Not matched: ../datasets/data/train/dialogues_107.json | SNG01631.json | taxi | taxi-arriveby | ten o'clock a.m
-Not matched: ../datasets/data/train/dialogues_108.json | WOZ20245.json | restaurant | restaurant-name | pizza hut cherry hinton
-Not matched: ../datasets/data/train/dialogues_108.json | SSNG0367.json | hotel | hotel-name | a and b guest house
-Not matched: ../datasets/data/train/dialogues_112.json | SSNG0338.json | hotel | hotel-name | gonville hotel
-Not matched: ../datasets/data/train/dialogues_115.json | SNG01929.json | taxi | taxi-arriveby | three forty five p.m
-Not matched: ../datasets/data/train/dialogues_122.json | PMUL0192.json | hotel | hotel-name | rosas bed and breakfast
-Not matched: ../datasets/data/train/dialogues_124.json | MUL1356.json | taxi | taxi-departure | university arms hotel
-Not matched: ../datasets/data/train/dialogues_124.json | MUL1356.json | hotel | hotel-name | university arms hotel
-Not matched: ../datasets/data/train/dialogues_134.json | PMUL0208.json | hotel | hotel-name | worth house
-Not matched: ../datasets/data/train/dialogues_136.json | SSNG0348.json | hotel | hotel-name | archway house
-Not matched: ../datasets/data/train/dialogues_137.json | MUL0120.json | taxi | taxi-destination | efes restaurant
-0.43558998180798847
-Not matched: ../datasets/data/dev/dialogues_015.json | PMUL3979.json | taxi | taxi-destination | cambridge
-Not matched: ../datasets/data/dev/dialogues_017.json | SNG01172.json | restaurant | restaurant-name | efes restaurant
-0.4255997449589543
-06/22/2021 08:07:53 - INFO - __main__ -    Distributed environment: NO
-Num processes: 1
-Process index: 0
-Local process index: 0
-Device: cuda
-Use FP16 precision: False
-
-loading configuration file https://huggingface.co/xlnet-large-cased/resolve/main/config.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/1f0d5fc4143aa8fe332810bac98d442fed5483549adcd9656e5709cd470003a0.a0945cddd1ef8f9d9c40c35c36bad4908625533057baeeafc6d26a9550f18c60
-Model config XLNetConfig {
-  "architectures": [
-    "XLNetLMHeadModel"
-  ],
-  "attn_type": "bi",
-  "bi_data": false,
-  "bos_token_id": 1,
-  "clamp_len": -1,
-  "d_head": 64,
-  "d_inner": 4096,
-  "d_model": 1024,
-  "dropout": 0.1,
-  "end_n_top": 5,
-  "eos_token_id": 2,
-  "ff_activation": "gelu",
-  "initializer_range": 0.02,
-  "layer_norm_eps": 1e-12,
-  "mem_len": null,
-  "model_type": "xlnet",
-  "n_head": 16,
-  "n_layer": 24,
-  "pad_token_id": 5,
-  "reuse_len": null,
-  "same_length": false,
-  "start_n_top": 5,
-  "summary_activation": "tanh",
-  "summary_last_dropout": 0.1,
-  "summary_type": "last",
-  "summary_use_proj": true,
-  "task_specific_params": {
-    "text-generation": {
-      "do_sample": true,
-      "max_length": 250
-    }
-  },
-  "transformers_version": "4.6.0",
-  "untie_r": true,
-  "use_mems_eval": true,
-  "use_mems_train": false,
-  "vocab_size": 32000
-}
-
-loading file https://huggingface.co/xlnet-large-cased/resolve/main/spiece.model from cache at /dhome/boewoei0123/.cache/huggingface/transformers/3af982b422f8bb8c510fdd1112afe6f5ec3f3219ef859edcf4c3826bec14832e.d93497120e3a865e2970f26abdf7bf375896f97fde8b874b70909592a6c785c9
-loading file https://huggingface.co/xlnet-large-cased/resolve/main/tokenizer.json from cache at /dhome/boewoei0123/.cache/huggingface/transformers/6a4afd4829edeea0c7fe7735eccea233e66e79729e574966cfd9ec47f81d269a.2a683f915238b4f560dab0c724066cf0a7de9a851e96b0fb3a1e7f0881552f53
-loading file https://huggingface.co/xlnet-large-cased/resolve/main/added_tokens.json from cache at None
-loading file https://huggingface.co/xlnet-large-cased/resolve/main/special_tokens_map.json from cache at None
-loading file https://huggingface.co/xlnet-large-cased/resolve/main/tokenizer_config.json from cache at None
-06/22/2021 08:07:57 - INFO - __main__ -    Saving tokenizer to ./saved/0622-0807/tokenizer...
-tokenizer config file saved in ./saved/0622-0807/tokenizer_config.json
-Special tokens file saved in ./saved/0622-0807/special_tokens_map.json
-loading weights file https://huggingface.co/xlnet-large-cased/resolve/main/pytorch_model.bin from cache at /dhome/boewoei0123/.cache/huggingface/transformers/0c2b00a768ca7c5b3534b75606a47a7e1125b10ce354b217022de5a12029859c.7fff7afe180c24f31dabdb196f95ca2e26a8aa357c1db6137f4fec6430db9776
-Some weights of the model checkpoint at xlnet-large-cased were not used when initializing XLNetForQuestionAnswering: ['lm_loss.bias', 'lm_loss.weight']
-- This IS expected if you are initializing XLNetForQuestionAnswering from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
-- This IS NOT expected if you are initializing XLNetForQuestionAnswering from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
-Some weights of XLNetForQuestionAnswering were not initialized from the model checkpoint at xlnet-large-cased and are newly initialized: ['end_logits.dense_1.bias', 'end_logits.dense_0.bias', 'end_logits.dense_1.weight', 'answer_class.dense_1.weight', 'end_logits.dense_0.weight', 'start_logits.dense.bias', 'start_logits.dense.weight', 'answer_class.dense_0.bias', 'end_logits.LayerNorm.weight', 'end_logits.LayerNorm.bias', 'answer_class.dense_0.weight']
-You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
-06/22/2021 08:08:02 - WARNING - datasets.builder -    Using custom data configuration default-0e56a91431259ecb
-0 tables [00:00, ? tables/s]1 tables [00:00,  2.63 tables/s]                                0 tables [00:00, ? tables/s]                            Downloading and preparing dataset json/default (download: Unknown size, generated: Unknown size, post-processed: Unknown size, total: Unknown size) to /dhome/boewoei0123/.cache/huggingface/datasets/json/default-0e56a91431259ecb/0.0.0/83d5b3a2f62630efc6b5315f00f20209b4ad91a00ac586597caee3a4da0bef02...
-Dataset json downloaded and prepared to /dhome/boewoei0123/.cache/huggingface/datasets/json/default-0e56a91431259ecb/0.0.0/83d5b3a2f62630efc6b5315f00f20209b4ad91a00ac586597caee3a4da0bef02. Subsequent calls will reuse this data.
- #0:   0%|          | 0/44 [00:00<?, ?ba/s]
- #1:   0%|          | 0/44 [00:00<?, ?ba/s][A
-
- #2:   0%|          | 0/44 [00:00<?, ?ba/s][A[A
-
-
- #3:   0%|          | 0/44 [00:00<?, ?ba/s][A[A[A
- #1:   2%|▏         | 1/44 [00:00<00:38,  1.11ba/s][A #0:   2%|▏         | 1/44 [00:01<00:44,  1.02s/ba]
-
- #2:   2%|▏         | 1/44 [00:01<00:43,  1.01s/ba][A[A
-
-
- #3:   2%|▏         | 1/44 [00:01<00:45,  1.06s/ba][A[A[A
- #1:   5%|▍         | 2/44 [00:01<00:39,  1.07ba/s][A #0:   5%|▍         | 2/44 [00:02<00:44,  1.06s/ba]
-
-
- #3:   5%|▍         | 2/44 [00:02<00:45,  1.08s/ba][A[A[A
-
- #2:   5%|▍         | 2/44 [00:02<00:45,  1.08s/ba][A[A
- #1:   7%|▋         | 3/44 [00:02<00:39,  1.03ba/s][A #0:   7%|▋         | 3/44 [00:03<00:43,  1.06s/ba]
-
- #2:   7%|▋         | 3/44 [00:03<00:44,  1.09s/ba][A[A
-
-
- #3:   7%|▋         | 3/44 [00:03<00:45,  1.11s/ba][A[A[A
- #1:   9%|▉         | 4/44 [00:03<00:39,  1.02ba/s][A #0:   9%|▉         | 4/44 [00:04<00:40,  1.02s/ba]
-
-
- #3:   9%|▉         | 4/44 [00:04<00:45,  1.13s/ba][A[A[A
-
- #2:   9%|▉         | 4/44 [00:04<00:46,  1.16s/ba][A[A #0:  11%|█▏        | 5/44 [00:05<00:38,  1.01ba/s]
- #1:  11%|█▏        | 5/44 [00:05<00:41,  1.07s/ba][A
-
-
- #3:  11%|█▏        | 5/44 [00:05<00:43,  1.10s/ba][A[A[A
-
- #2:  11%|█▏        | 5/44 [00:05<00:45,  1.16s/ba][A[A #0:  14%|█▎        | 6/44 [00:06<00:39,  1.04s/ba]
- #1:  14%|█▎        | 6/44 [00:06<00:42,  1.13s/ba][A
-
-
- #3:  14%|█▎        | 6/44 [00:06<00:42,  1.11s/ba][A[A[A
-
- #2:  14%|█▎        | 6/44 [00:06<00:42,  1.12s/ba][A[A #0:  16%|█▌        | 7/44 [00:07<00:41,  1.11s/ba]
-
- #2:  16%|█▌        | 7/44 [00:07<00:41,  1.12s/ba][A[A
-
-
- #3:  16%|█▌        | 7/44 [00:07<00:42,  1.16s/ba][A[A[A
- #1:  16%|█▌        | 7/44 [00:08<00:47,  1.29s/ba][A #0:  18%|█▊        | 8/44 [00:08<00:39,  1.09s/ba]
-
-
- #3:  18%|█▊        | 8/44 [00:09<00:40,  1.13s/ba][A[A[A
-
- #2:  18%|█▊        | 8/44 [00:09<00:40,  1.13s/ba][A[A #0:  20%|██        | 9/44 [00:09<00:38,  1.10s/ba]
- #1:  18%|█▊        | 8/44 [00:09<00:51,  1.44s/ba][A
-
-
- #3:  20%|██        | 9/44 [00:10<00:39,  1.14s/ba][A[A[A
-
- #2:  20%|██        | 9/44 [00:10<00:40,  1.16s/ba][A[A #0:  23%|██▎       | 10/44 [00:10<00:38,  1.12s/ba]
-
-
- #3:  23%|██▎       | 10/44 [00:11<00:37,  1.10s/ba][A[A[A
- #1:  20%|██        | 9/44 [00:11<00:50,  1.45s/ba][A
-
- #2:  23%|██▎       | 10/44 [00:11<00:41,  1.21s/ba][A[A #0:  25%|██▌       | 11/44 [00:12<00:37,  1.15s/ba]
-
-
- #3:  25%|██▌       | 11/44 [00:12<00:34,  1.05s/ba][A[A[A
- #1:  23%|██▎       | 10/44 [00:12<00:45,  1.34s/ba][A
-
- #2:  25%|██▌       | 11/44 [00:12<00:37,  1.13s/ba][A[A #0:  27%|██▋       | 12/44 [00:13<00:35,  1.12s/ba]
-
-
- #3:  27%|██▋       | 12/44 [00:13<00:34,  1.06s/ba][A[A[A
-
- #2:  27%|██▋       | 12/44 [00:13<00:34,  1.06s/ba][A[A
- #1:  25%|██▌       | 11/44 [00:13<00:41,  1.27s/ba][A #0:  30%|██▉       | 13/44 [00:14<00:34,  1.12s/ba]
-
-
- #3:  30%|██▉       | 13/44 [00:14<00:33,  1.07s/ba][A[A[A
- #1:  27%|██▋       | 12/44 [00:14<00:38,  1.19s/ba][A
-
- #2:  30%|██▉       | 13/44 [00:14<00:34,  1.12s/ba][A[A
-
-
- #3:  32%|███▏      | 14/44 [00:15<00:31,  1.07s/ba][A[A[A #0:  32%|███▏      | 14/44 [00:15<00:34,  1.15s/ba]
- #1:  30%|██▉       | 13/44 [00:15<00:36,  1.17s/ba][A
-
- #2:  32%|███▏      | 14/44 [00:16<00:36,  1.21s/ba][A[A
-
-
- #3:  34%|███▍      | 15/44 [00:16<00:30,  1.05s/ba][A[A[A #0:  34%|███▍      | 15/44 [00:16<00:32,  1.14s/ba]
- #1:  32%|███▏      | 14/44 [00:16<00:33,  1.13s/ba][A
-
- #2:  34%|███▍      | 15/44 [00:17<00:35,  1.21s/ba][A[A
-
-
- #3:  36%|███▋      | 16/44 [00:17<00:29,  1.05s/ba][A[A[A
- #1:  34%|███▍      | 15/44 [00:17<00:32,  1.11s/ba][A #0:  36%|███▋      | 16/44 [00:17<00:33,  1.20s/ba]
-
-
- #3:  39%|███▊      | 17/44 [00:18<00:28,  1.05s/ba][A[A[A
-
- #2:  36%|███▋      | 16/44 [00:18<00:34,  1.23s/ba][A[A #0:  39%|███▊      | 17/44 [00:19<00:32,  1.21s/ba]
- #1:  36%|███▋      | 16/44 [00:19<00:32,  1.16s/ba][A
-
-
- #3:  41%|████      | 18/44 [00:19<00:27,  1.07s/ba][A[A[A
-
- #2:  39%|███▊      | 17/44 [00:19<00:31,  1.18s/ba][A[A #0:  41%|████      | 18/44 [00:20<00:31,  1.21s/ba]
- #1:  39%|███▊      | 17/44 [00:20<00:32,  1.20s/ba][A
-
-
- #3:  43%|████▎     | 19/44 [00:20<00:26,  1.06s/ba][A[A[A
-
- #2:  41%|████      | 18/44 [00:20<00:30,  1.16s/ba][A[A #0:  43%|████▎     | 19/44 [00:21<00:28,  1.15s/ba]
-
-
- #3:  45%|████▌     | 20/44 [00:21<00:25,  1.05s/ba][A[A[A
- #1:  41%|████      | 18/44 [00:21<00:33,  1.29s/ba][A
-
- #2:  43%|████▎     | 19/44 [00:21<00:28,  1.13s/ba][A[A #0:  45%|████▌     | 20/44 [00:22<00:27,  1.15s/ba]
-
- #2:  45%|████▌     | 20/44 [00:22<00:24,  1.04s/ba][A[A
- #1:  43%|████▎     | 19/44 [00:22<00:29,  1.18s/ba][A
-
-
- #3:  48%|████▊     | 21/44 [00:22<00:24,  1.08s/ba][A[A[A
-
- #2:  48%|████▊     | 21/44 [00:23<00:24,  1.05s/ba][A[A #0:  48%|████▊     | 21/44 [00:23<00:27,  1.22s/ba]
-
-
- #3:  50%|█████     | 22/44 [00:23<00:23,  1.07s/ba][A[A[A
- #1:  45%|████▌     | 20/44 [00:23<00:27,  1.15s/ba][A #0:  50%|█████     | 22/44 [00:24<00:25,  1.18s/ba]
-
- #2:  50%|█████     | 22/44 [00:24<00:23,  1.06s/ba][A[A
-
-
- #3:  52%|█████▏    | 23/44 [00:24<00:22,  1.09s/ba][A[A[A
- #1:  48%|████▊     | 21/44 [00:25<00:27,  1.18s/ba][A #0:  52%|█████▏    | 23/44 [00:25<00:23,  1.13s/ba]
-
-
- #3:  55%|█████▍    | 24/44 [00:26<00:21,  1.09s/ba][A[A[A
-
- #2:  52%|█████▏    | 23/44 [00:26<00:23,  1.10s/ba][A[A
- #1:  50%|█████     | 22/44 [00:26<00:24,  1.13s/ba][A
-
- #2:  55%|█████▍    | 24/44 [00:27<00:20,  1.05s/ba][A[A
-
-
- #3:  57%|█████▋    | 25/44 [00:27<00:20,  1.07s/ba][A[A[A #0:  55%|█████▍    | 24/44 [00:27<00:24,  1.25s/ba]
- #1:  52%|█████▏    | 23/44 [00:27<00:26,  1.24s/ba][A
-
-
- #3:  59%|█████▉    | 26/44 [00:28<00:19,  1.10s/ba][A[A[A #0:  57%|█████▋    | 25/44 [00:28<00:23,  1.23s/ba]
-
- #2:  57%|█████▋    | 25/44 [00:28<00:23,  1.22s/ba][A[A
- #1:  55%|█████▍    | 24/44 [00:28<00:24,  1.25s/ba][A
-
-
- #3:  61%|██████▏   | 27/44 [00:29<00:18,  1.09s/ba][A[A[A #0:  59%|█████▉    | 26/44 [00:29<00:21,  1.18s/ba]
-
- #2:  59%|█████▉    | 26/44 [00:30<00:22,  1.26s/ba][A[A
- #1:  57%|█████▋    | 25/44 [00:30<00:23,  1.25s/ba][A
-
-
- #3:  64%|██████▎   | 28/44 [00:30<00:18,  1.17s/ba][A[A[A #0:  61%|██████▏   | 27/44 [00:30<00:19,  1.15s/ba]
-
- #2:  61%|██████▏   | 27/44 [00:31<00:20,  1.21s/ba][A[A
- #1:  59%|█████▉    | 26/44 [00:31<00:21,  1.20s/ba][A
-
-
- #3:  66%|██████▌   | 29/44 [00:31<00:17,  1.18s/ba][A[A[A #0:  64%|██████▎   | 28/44 [00:32<00:18,  1.16s/ba]
- #1:  61%|██████▏   | 27/44 [00:32<00:18,  1.10s/ba][A
-
- #2:  64%|██████▎   | 28/44 [00:32<00:18,  1.15s/ba][A[A
-
-
- #3:  68%|██████▊   | 30/44 [00:32<00:15,  1.14s/ba][A[A[A
- #1:  64%|██████▎   | 28/44 [00:33<00:17,  1.07s/ba][A #0:  66%|██████▌   | 29/44 [00:33<00:18,  1.20s/ba]
-
- #2:  66%|██████▌   | 29/44 [00:33<00:17,  1.17s/ba][A[A
- #1:  66%|██████▌   | 29/44 [00:34<00:15,  1.05s/ba][A
-
-
- #3:  70%|███████   | 31/44 [00:34<00:14,  1.15s/ba][A[A[A
-
- #2:  68%|██████▊   | 30/44 [00:34<00:16,  1.19s/ba][A[A #0:  68%|██████▊   | 30/44 [00:35<00:19,  1.40s/ba]
-
-
- #3:  73%|███████▎  | 32/44 [00:35<00:13,  1.11s/ba][A[A[A
- #1:  68%|██████▊   | 30/44 [00:35<00:16,  1.18s/ba][A
-
- #2:  70%|███████   | 31/44 [00:35<00:15,  1.17s/ba][A[A
-
-
- #3:  75%|███████▌  | 33/44 [00:36<00:12,  1.11s/ba][A[A[A #0:  70%|███████   | 31/44 [00:36<00:17,  1.32s/ba]
-
- #2:  73%|███████▎  | 32/44 [00:36<00:14,  1.20s/ba][A[A
-
-
- #3:  77%|███████▋  | 34/44 [00:37<00:10,  1.09s/ba][A[A[A
- #1:  70%|███████   | 31/44 [00:37<00:17,  1.34s/ba][A #0:  73%|███████▎  | 32/44 [00:37<00:15,  1.26s/ba]
-
- #2:  75%|███████▌  | 33/44 [00:38<00:12,  1.16s/ba][A[A
-
-
- #3:  80%|███████▉  | 35/44 [00:38<00:10,  1.15s/ba][A[A[A #0:  75%|███████▌  | 33/44 [00:38<00:13,  1.27s/ba]
-
- #2:  77%|███████▋  | 34/44 [00:38<00:10,  1.09s/ba][A[A
- #1:  73%|███████▎  | 32/44 [00:39<00:17,  1.48s/ba][A #0:  77%|███████▋  | 34/44 [00:39<00:12,  1.22s/ba]
-
- #2:  80%|███████▉  | 35/44 [00:39<00:09,  1.07s/ba][A[A
-
-
- #3:  82%|████████▏ | 36/44 [00:40<00:09,  1.23s/ba][A[A[A #0:  80%|███████▉  | 35/44 [00:40<00:10,  1.15s/ba]
- #1:  75%|███████▌  | 33/44 [00:40<00:17,  1.58s/ba][A
-
-
- #3:  84%|████████▍ | 37/44 [00:41<00:08,  1.22s/ba][A[A[A
-
- #2:  82%|████████▏ | 36/44 [00:41<00:09,  1.14s/ba][A[A #0:  82%|████████▏ | 36/44 [00:42<00:09,  1.21s/ba]
- #1:  77%|███████▋  | 34/44 [00:42<00:15,  1.51s/ba][A
-
-
- #3:  86%|████████▋ | 38/44 [00:42<00:07,  1.22s/ba][A[A[A
-
- #2:  84%|████████▍ | 37/44 [00:42<00:08,  1.22s/ba][A[A #0:  84%|████████▍ | 37/44 [00:43<00:08,  1.19s/ba]
- #1:  80%|███████▉  | 35/44 [00:43<00:12,  1.41s/ba][A
-
-
- #3:  89%|████████▊ | 39/44 [00:43<00:06,  1.29s/ba][A[A[A
-
- #2:  86%|████████▋ | 38/44 [00:44<00:07,  1.27s/ba][A[A #0:  86%|████████▋ | 38/44 [00:44<00:06,  1.16s/ba]
-
-
- #3:  91%|█████████ | 40/44 [00:45<00:05,  1.26s/ba][A[A[A
- #1:  82%|████████▏ | 36/44 [00:45<00:11,  1.48s/ba][A
-
- #2:  89%|████████▊ | 39/44 [00:45<00:06,  1.30s/ba][A[A #0:  89%|████████▊ | 39/44 [00:46<00:06,  1.32s/ba]
-
-
- #3:  93%|█████████▎| 41/44 [00:46<00:03,  1.27s/ba][A[A[A
- #1:  84%|████████▍ | 37/44 [00:46<00:10,  1.49s/ba][A
-
- #2:  91%|█████████ | 40/44 [00:46<00:05,  1.27s/ba][A[A
-
-
- #3:  95%|█████████▌| 42/44 [00:47<00:02,  1.28s/ba][A[A[A
-
- #2:  93%|█████████▎| 41/44 [00:47<00:03,  1.24s/ba][A[A
- #1:  86%|████████▋ | 38/44 [00:47<00:08,  1.44s/ba][A #0:  91%|█████████ | 40/44 [00:47<00:05,  1.49s/ba]
-
- #2:  95%|█████████▌| 42/44 [00:49<00:02,  1.22s/ba][A[A
-
-
- #3:  98%|█████████▊| 43/44 [00:49<00:01,  1.31s/ba][A[A[A #0:  93%|█████████▎| 41/44 [00:49<00:04,  1.44s/ba]
- #1:  89%|████████▊ | 39/44 [00:49<00:07,  1.50s/ba][A
-
-
- #3: 100%|██████████| 44/44 [00:49<00:00,  1.18s/ba][A[A[A #3: 100%|██████████| 44/44 [00:49<00:00,  1.13s/ba]
-
- #2:  98%|█████████▊| 43/44 [00:50<00:01,  1.20s/ba][A[A #0:  95%|█████████▌| 42/44 [00:50<00:02,  1.39s/ba]
-
- #2: 100%|██████████| 44/44 [00:51<00:00,  1.13s/ba][A[A #2: 100%|██████████| 44/44 [00:51<00:00,  1.16s/ba]
- #1:  91%|█████████ | 40/44 [00:51<00:06,  1.53s/ba][A #0:  98%|█████████▊| 43/44 [00:51<00:01,  1.30s/ba]
- #1:  93%|█████████▎| 41/44 [00:52<00:04,  1.40s/ba][A #0: 100%|██████████| 44/44 [00:52<00:00,  1.15s/ba] #0: 100%|██████████| 44/44 [00:52<00:00,  1.19s/ba]
- #1:  95%|█████████▌| 42/44 [00:53<00:02,  1.26s/ba][A
- #1:  98%|█████████▊| 43/44 [00:54<00:01,  1.15s/ba][A
- #1: 100%|██████████| 44/44 [00:54<00:00,  1.00ba/s][A #1: 100%|██████████| 44/44 [00:54<00:00,  1.24s/ba]
-
-
-
- #0:   0%|          | 0/7 [00:00<?, ?ba/s]
- #1:   0%|          | 0/7 [00:00<?, ?ba/s][A
-
- #2:   0%|          | 0/7 [00:00<?, ?ba/s][A[A
-
-
- #3:   0%|          | 0/7 [00:00<?, ?ba/s][A[A[A
-
- #2:  14%|█▍        | 1/7 [00:02<00:12,  2.03s/ba][A[A #0:  14%|█▍        | 1/7 [00:02<00:12,  2.08s/ba]
-
-
- #3:  14%|█▍        | 1/7 [00:02<00:14,  2.36s/ba][A[A[A
- #1:  14%|█▍        | 1/7 [00:03<00:18,  3.10s/ba][A #0:  29%|██▊       | 2/7 [00:04<00:10,  2.14s/ba]
-
- #2:  29%|██▊       | 2/7 [00:04<00:10,  2.17s/ba][A[A
-
-
- #3:  29%|██▊       | 2/7 [00:04<00:11,  2.33s/ba][A[A[A
- #1:  29%|██▊       | 2/7 [00:04<00:13,  2.74s/ba][A #0:  43%|████▎     | 3/7 [00:06<00:08,  2.12s/ba]
-
- #2:  43%|████▎     | 3/7 [00:06<00:08,  2.13s/ba][A[A
-
-
- #3:  43%|████▎     | 3/7 [00:07<00:09,  2.36s/ba][A[A[A
- #1:  43%|████▎     | 3/7 [00:07<00:10,  2.64s/ba][A #0:  57%|█████▋    | 4/7 [00:08<00:06,  2.11s/ba]
-
-
- #3:  57%|█████▋    | 4/7 [00:09<00:06,  2.31s/ba][A[A[A
-
- #2:  57%|█████▋    | 4/7 [00:09<00:06,  2.33s/ba][A[A
- #1:  57%|█████▋    | 4/7 [00:09<00:07,  2.52s/ba][A
-
-
- #3:  71%|███████▏  | 5/7 [00:11<00:04,  2.25s/ba][A[A[A #0:  71%|███████▏  | 5/7 [00:11<00:04,  2.42s/ba]
- #1:  71%|███████▏  | 5/7 [00:11<00:04,  2.42s/ba][A
-
- #2:  71%|███████▏  | 5/7 [00:12<00:04,  2.48s/ba][A[A
-
-
- #3:  86%|████████▌ | 6/7 [00:13<00:02,  2.26s/ba][A[A[A #0:  86%|████████▌ | 6/7 [00:14<00:02,  2.43s/ba]
-
-
- #3: 100%|██████████| 7/7 [00:14<00:00,  1.74s/ba][A[A[A #3: 100%|██████████| 7/7 [00:14<00:00,  2.03s/ba] #0: 100%|██████████| 7/7 [00:14<00:00,  1.88s/ba] #0: 100%|██████████| 7/7 [00:14<00:00,  2.11s/ba]
-
- #2:  86%|████████▌ | 6/7 [00:14<00:02,  2.50s/ba][A[A
- #1:  86%|████████▌ | 6/7 [00:14<00:02,  2.63s/ba][A
-
- #2: 100%|██████████| 7/7 [00:15<00:00,  1.98s/ba][A[A #2: 100%|██████████| 7/7 [00:15<00:00,  2.21s/ba]
- #1: 100%|██████████| 7/7 [00:15<00:00,  2.02s/ba][A #1: 100%|██████████| 7/7 [00:15<00:00,  2.22s/ba]
-
-06/22/2021 08:09:19 - INFO - __main__ -    
-******** Running training ********
-06/22/2021 08:09:19 - INFO - __main__ -    Num train examples = 188151
-06/22/2021 08:09:19 - INFO - __main__ -    Num Epochs = 3
-06/22/2021 08:09:19 - INFO - __main__ -    Instantaneous batch size per device = 4
-06/22/2021 08:09:19 - INFO - __main__ -    Total train batch size (w/ parallel, distributed & accumulation) = 64
-06/22/2021 08:09:19 - INFO - __main__ -    Instantaneous steps per epoch = 47038
-06/22/2021 08:09:19 - INFO - __main__ -    Update steps per epoch = 2940
-06/22/2021 08:09:19 - INFO - __main__ -    Total update steps = 8820
-06/22/2021 08:09:19 - INFO - __main__ -    
-Epoch 01 / 03
-06/22/2021 08:17:04 - INFO - __main__ -    Train | Loss: 6.63475
-06/22/2021 08:24:49 - INFO - __main__ -    Train | Loss: 5.38774
-06/22/2021 08:32:35 - INFO - __main__ -    Train | Loss: 4.36061
-06/22/2021 08:40:20 - INFO - __main__ -    Train | Loss: 3.64349
-06/22/2021 08:48:05 - INFO - __main__ -    Train | Loss: 3.06403
-06/22/2021 08:55:50 - INFO - __main__ -    Train | Loss: 2.63710
-06/22/2021 09:03:36 - INFO - __main__ -    Train | Loss: 2.32044
-06/22/2021 09:11:22 - INFO - __main__ -    Train | Loss: 2.07673
-06/22/2021 09:19:08 - INFO - __main__ -    Train | Loss: 1.88301
-06/22/2021 09:26:56 - INFO - __main__ -    Train | Loss: 1.72305
-06/22/2021 09:34:39 - INFO - __main__ -    Train | Loss: 1.58557
-06/22/2021 09:42:22 - INFO - __main__ -    Train | Loss: 1.47142
-06/22/2021 09:50:05 - INFO - __main__ -    Train | Loss: 1.37297
-06/22/2021 09:57:47 - INFO - __main__ -    Train | Loss: 1.28958
-06/22/2021 10:05:32 - INFO - __main__ -    Train | Loss: 1.21654
-06/22/2021 10:13:15 - INFO - __main__ -    Train | Loss: 1.15071
-06/22/2021 10:20:57 - INFO - __main__ -    Train | Loss: 1.09242
-06/22/2021 10:28:40 - INFO - __main__ -    Train | Loss: 1.03936
-06/22/2021 10:36:22 - INFO - __main__ -    Train | Loss: 0.99236
-06/22/2021 10:44:03 - INFO - __main__ -    Train | Loss: 0.94967
-06/22/2021 10:51:46 - INFO - __main__ -    Train | Loss: 0.91076
-06/22/2021 10:59:27 - INFO - __main__ -    Train | Loss: 0.87517
-06/22/2021 11:07:09 - INFO - __main__ -    Train | Loss: 0.84268
-06/22/2021 11:14:50 - INFO - __main__ -    Train | Loss: 0.81200
-06/22/2021 11:22:31 - INFO - __main__ -    Train | Loss: 0.78433
-06/22/2021 11:53:19 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26861 features.
-06/22/2021 11:55:00 - INFO - __main__ -    Valid | MAA: 0.97418, JAA: 0.79031, MEM: 0.92893, JEM: 0.75936, MGA: 0.94935, JGA: 0.63966
-Configuration saved in ./saved/0622-0807/config.json
-Model weights saved in ./saved/0622-0807/pytorch_model.bin
-06/22/2021 11:55:02 - INFO - __main__ -    Saving config and model to ./saved/0622-0807...
-06/22/2021 12:02:42 - INFO - __main__ -    Train | Loss: 0.75878
-06/22/2021 12:10:24 - INFO - __main__ -    Train | Loss: 0.73467
-06/22/2021 12:18:06 - INFO - __main__ -    Train | Loss: 0.71213
-06/22/2021 12:25:48 - INFO - __main__ -    Train | Loss: 0.69130
-06/22/2021 12:33:29 - INFO - __main__ -    Train | Loss: 0.67186
-06/22/2021 12:41:10 - INFO - __main__ -    Train | Loss: 0.65318
-06/22/2021 12:48:49 - INFO - __main__ -    Train | Loss: 0.63563
-06/22/2021 12:56:27 - INFO - __main__ -    Train | Loss: 0.61924
-06/22/2021 13:04:07 - INFO - __main__ -    Train | Loss: 0.60372
-06/22/2021 13:11:45 - INFO - __main__ -    Train | Loss: 0.58910
-06/22/2021 13:19:26 - INFO - __main__ -    Train | Loss: 0.57511
-06/22/2021 13:27:07 - INFO - __main__ -    Train | Loss: 0.56196
-06/22/2021 13:34:44 - INFO - __main__ -    Train | Loss: 0.54925
-06/22/2021 13:42:26 - INFO - __main__ -    Train | Loss: 0.53750
-06/22/2021 13:50:06 - INFO - __main__ -    Train | Loss: 0.52594
-06/22/2021 13:57:46 - INFO - __main__ -    Train | Loss: 0.51510
-06/22/2021 14:05:29 - INFO - __main__ -    Train | Loss: 0.50473
-06/22/2021 14:13:11 - INFO - __main__ -    Train | Loss: 0.49466
-06/22/2021 14:20:51 - INFO - __main__ -    Train | Loss: 0.48545
-06/22/2021 14:28:32 - INFO - __main__ -    Train | Loss: 0.47629
-06/22/2021 14:36:13 - INFO - __main__ -    Train | Loss: 0.46771
-06/22/2021 14:43:54 - INFO - __main__ -    Train | Loss: 0.45913
-06/22/2021 14:44:11 - INFO - __main__ -    Train | Loss: 0.45877
-06/22/2021 15:14:55 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26861 features.
-06/22/2021 15:16:36 - INFO - __main__ -    Valid | MAA: 0.97816, JAA: 0.82410, MEM: 0.95590, JEM: 0.83550, MGA: 0.96266, JGA: 0.71010
-Configuration saved in ./saved/0622-0807/config.json
-Model weights saved in ./saved/0622-0807/pytorch_model.bin
-06/22/2021 15:16:41 - INFO - __main__ -    Saving config and model to ./saved/0622-0807...
-06/22/2021 15:16:41 - INFO - __main__ -    
-Epoch 02 / 03
-06/22/2021 15:24:24 - INFO - __main__ -    Train | Loss: 0.05674
-06/22/2021 15:32:04 - INFO - __main__ -    Train | Loss: 0.05946
-06/22/2021 15:39:43 - INFO - __main__ -    Train | Loss: 0.06065
-06/22/2021 15:47:25 - INFO - __main__ -    Train | Loss: 0.05947
-06/22/2021 15:55:04 - INFO - __main__ -    Train | Loss: 0.06020
-06/22/2021 16:02:43 - INFO - __main__ -    Train | Loss: 0.05949
-06/22/2021 16:10:22 - INFO - __main__ -    Train | Loss: 0.06071
-06/22/2021 16:18:01 - INFO - __main__ -    Train | Loss: 0.06094
-06/22/2021 16:25:40 - INFO - __main__ -    Train | Loss: 0.06073
-06/22/2021 16:33:18 - INFO - __main__ -    Train | Loss: 0.06068
-06/22/2021 16:40:58 - INFO - __main__ -    Train | Loss: 0.06018
-06/22/2021 16:48:36 - INFO - __main__ -    Train | Loss: 0.06022
-06/22/2021 16:56:15 - INFO - __main__ -    Train | Loss: 0.05963
-06/22/2021 17:03:54 - INFO - __main__ -    Train | Loss: 0.05951
-06/22/2021 17:11:36 - INFO - __main__ -    Train | Loss: 0.05896
-06/22/2021 17:19:14 - INFO - __main__ -    Train | Loss: 0.05896
-06/22/2021 17:26:54 - INFO - __main__ -    Train | Loss: 0.05831
-06/22/2021 17:34:33 - INFO - __main__ -    Train | Loss: 0.05831
-06/22/2021 17:42:13 - INFO - __main__ -    Train | Loss: 0.05836
-06/22/2021 17:49:53 - INFO - __main__ -    Train | Loss: 0.05809
-06/22/2021 17:57:33 - INFO - __main__ -    Train | Loss: 0.05746
-06/22/2021 18:05:13 - INFO - __main__ -    Train | Loss: 0.05769
-06/22/2021 18:12:52 - INFO - __main__ -    Train | Loss: 0.05777
-06/22/2021 18:20:30 - INFO - __main__ -    Train | Loss: 0.05767
-06/22/2021 18:28:07 - INFO - __main__ -    Train | Loss: 0.05703
-06/22/2021 18:58:48 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26861 features.
-06/22/2021 19:00:27 - INFO - __main__ -    Valid | MAA: 0.98027, JAA: 0.84406, MEM: 0.95955, JEM: 0.84976, MGA: 0.96724, JGA: 0.74308
-Configuration saved in ./saved/0622-0807/config.json
-Model weights saved in ./saved/0622-0807/pytorch_model.bin
-06/22/2021 19:00:32 - INFO - __main__ -    Saving config and model to ./saved/0622-0807...
-06/22/2021 19:08:12 - INFO - __main__ -    Train | Loss: 0.05681
-06/22/2021 19:15:52 - INFO - __main__ -    Train | Loss: 0.05672
-06/22/2021 19:23:33 - INFO - __main__ -    Train | Loss: 0.05655
-06/22/2021 19:31:12 - INFO - __main__ -    Train | Loss: 0.05641
-06/22/2021 19:38:53 - INFO - __main__ -    Train | Loss: 0.05624
-06/22/2021 19:46:33 - INFO - __main__ -    Train | Loss: 0.05596
-06/22/2021 19:54:14 - INFO - __main__ -    Train | Loss: 0.05591
-06/22/2021 20:01:55 - INFO - __main__ -    Train | Loss: 0.05561
-06/22/2021 20:09:36 - INFO - __main__ -    Train | Loss: 0.05531
-06/22/2021 20:17:15 - INFO - __main__ -    Train | Loss: 0.05510
-06/22/2021 20:24:55 - INFO - __main__ -    Train | Loss: 0.05494
-06/22/2021 20:32:36 - INFO - __main__ -    Train | Loss: 0.05493
-06/22/2021 20:40:15 - INFO - __main__ -    Train | Loss: 0.05449
-06/22/2021 20:47:52 - INFO - __main__ -    Train | Loss: 0.05429
-06/22/2021 20:55:30 - INFO - __main__ -    Train | Loss: 0.05422
-06/22/2021 21:03:07 - INFO - __main__ -    Train | Loss: 0.05387
-06/22/2021 21:10:46 - INFO - __main__ -    Train | Loss: 0.05349
-06/22/2021 21:18:24 - INFO - __main__ -    Train | Loss: 0.05330
-06/22/2021 21:26:02 - INFO - __main__ -    Train | Loss: 0.05297
-06/22/2021 21:33:39 - INFO - __main__ -    Train | Loss: 0.05290
-06/22/2021 21:41:16 - INFO - __main__ -    Train | Loss: 0.05265
-06/22/2021 21:48:55 - INFO - __main__ -    Train | Loss: 0.05257
-06/22/2021 21:49:12 - INFO - __main__ -    Train | Loss: 0.05256
-06/22/2021 22:19:49 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26861 features.
-06/22/2021 22:21:25 - INFO - __main__ -    Valid | MAA: 0.98015, JAA: 0.83550, MEM: 0.96096, JEM: 0.85831, MGA: 0.96700, JGA: 0.73697
-06/22/2021 22:21:25 - INFO - __main__ -    
-Epoch 03 / 03
-06/22/2021 22:29:06 - INFO - __main__ -    Train | Loss: 0.03304
-06/22/2021 22:36:47 - INFO - __main__ -    Train | Loss: 0.03139
-06/22/2021 22:44:27 - INFO - __main__ -    Train | Loss: 0.03034
-06/22/2021 22:52:08 - INFO - __main__ -    Train | Loss: 0.03106
-06/22/2021 22:59:49 - INFO - __main__ -    Train | Loss: 0.03142
-06/22/2021 23:07:32 - INFO - __main__ -    Train | Loss: 0.03230
-06/22/2021 23:15:10 - INFO - __main__ -    Train | Loss: 0.03234
-06/22/2021 23:22:50 - INFO - __main__ -    Train | Loss: 0.03232
-06/22/2021 23:30:29 - INFO - __main__ -    Train | Loss: 0.03255
-06/22/2021 23:38:08 - INFO - __main__ -    Train | Loss: 0.03232
-06/22/2021 23:45:47 - INFO - __main__ -    Train | Loss: 0.03214
-06/22/2021 23:53:24 - INFO - __main__ -    Train | Loss: 0.03185
-06/23/2021 00:01:04 - INFO - __main__ -    Train | Loss: 0.03207
-06/23/2021 00:08:41 - INFO - __main__ -    Train | Loss: 0.03191
-06/23/2021 00:16:18 - INFO - __main__ -    Train | Loss: 0.03190
-06/23/2021 00:23:54 - INFO - __main__ -    Train | Loss: 0.03176
-06/23/2021 00:31:31 - INFO - __main__ -    Train | Loss: 0.03134
-06/23/2021 00:39:08 - INFO - __main__ -    Train | Loss: 0.03106
-06/23/2021 00:46:45 - INFO - __main__ -    Train | Loss: 0.03092
-06/23/2021 00:54:24 - INFO - __main__ -    Train | Loss: 0.03084
-06/23/2021 01:02:01 - INFO - __main__ -    Train | Loss: 0.03105
-06/23/2021 01:09:37 - INFO - __main__ -    Train | Loss: 0.03112
-06/23/2021 01:17:12 - INFO - __main__ -    Train | Loss: 0.03114
-06/23/2021 01:24:48 - INFO - __main__ -    Train | Loss: 0.03114
-06/23/2021 01:32:24 - INFO - __main__ -    Train | Loss: 0.03103
-06/23/2021 02:03:00 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26861 features.
-06/23/2021 02:04:35 - INFO - __main__ -    Valid | MAA: 0.98223, JAA: 0.85464, MEM: 0.96461, JEM: 0.86808, MGA: 0.97099, JGA: 0.76629
-Configuration saved in ./saved/0622-0807/config.json
-Model weights saved in ./saved/0622-0807/pytorch_model.bin
-06/23/2021 02:04:40 - INFO - __main__ -    Saving config and model to ./saved/0622-0807...
-06/23/2021 02:12:16 - INFO - __main__ -    Train | Loss: 0.03098
-06/23/2021 02:19:52 - INFO - __main__ -    Train | Loss: 0.03077
-06/23/2021 02:27:29 - INFO - __main__ -    Train | Loss: 0.03056
-06/23/2021 02:35:05 - INFO - __main__ -    Train | Loss: 0.03049
-06/23/2021 02:42:45 - INFO - __main__ -    Train | Loss: 0.03037
-06/23/2021 02:50:23 - INFO - __main__ -    Train | Loss: 0.03045
-06/23/2021 02:58:01 - INFO - __main__ -    Train | Loss: 0.03024
-06/23/2021 03:05:39 - INFO - __main__ -    Train | Loss: 0.02998
-06/23/2021 03:13:17 - INFO - __main__ -    Train | Loss: 0.02990
-06/23/2021 03:20:56 - INFO - __main__ -    Train | Loss: 0.02974
-06/23/2021 03:28:40 - INFO - __main__ -    Train | Loss: 0.02984
-06/23/2021 03:36:25 - INFO - __main__ -    Train | Loss: 0.02971
-06/23/2021 03:44:11 - INFO - __main__ -    Train | Loss: 0.02954
-06/23/2021 03:51:56 - INFO - __main__ -    Train | Loss: 0.02946
-06/23/2021 03:59:41 - INFO - __main__ -    Train | Loss: 0.02937
-06/23/2021 04:07:27 - INFO - __main__ -    Train | Loss: 0.02937
-06/23/2021 04:15:12 - INFO - __main__ -    Train | Loss: 0.02922
-06/23/2021 04:22:58 - INFO - __main__ -    Train | Loss: 0.02915
-06/23/2021 04:30:41 - INFO - __main__ -    Train | Loss: 0.02898
-06/23/2021 04:38:25 - INFO - __main__ -    Train | Loss: 0.02885
-06/23/2021 04:46:07 - INFO - __main__ -    Train | Loss: 0.02877
-06/23/2021 04:53:50 - INFO - __main__ -    Train | Loss: 0.02871
-06/23/2021 04:54:08 - INFO - __main__ -    Train | Loss: 0.02870
-06/23/2021 05:24:53 - INFO - pred_utils -    Post-processing 25094 example predictions split into 26861 features.
-06/23/2021 05:26:35 - INFO - __main__ -    Valid | MAA: 0.98199, JAA: 0.85423, MEM: 0.96545, JEM: 0.87134, MGA: 0.97147, JGA: 0.77077
-Configuration saved in ./saved/0622-0807/config.json
-Model weights saved in ./saved/0622-0807/pytorch_model.bin
-06/23/2021 05:26:39 - INFO - __main__ -    Saving config and model to ./saved/0622-0807...
-Configuration saved in ./saved/0622-0807/config.json
-Model weights saved in ./saved/0622-0807/pytorch_model.bin
-06/23/2021 05:26:45 - INFO - __main__ -    Saving config and model to ./saved/0622-0807...
