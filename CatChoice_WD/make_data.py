@@ -219,9 +219,10 @@ if __name__ == "__main__":
                             else:
                                 slot_desc = cat_descriptions[service]["slot_descs"][slot][0]
                             if args.with_labels:
+                                #if poss_value.lower() in true_values:
                                 if poss_value.lower() == true_value:
                                     label = 1
-                                    start, end = bounds_record[service][slot].get(true_value, (-1, -1))
+                                    start, end = bounds_record[service][slot].get(poss_value.lower(), (-1, -1))
                                 else:
                                     label = 0
                                     start, end = -1, -1
