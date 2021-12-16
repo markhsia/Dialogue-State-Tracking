@@ -9,6 +9,15 @@ Extract values for each task slot from mission-oriented dialogues.
 * [Kaggle for seen domain](https://www.kaggle.com/c/adl-final-dst-with-chit-chat-seen-domains) (Ranked 1st out of 22 teams)
 * [Kaggle for unseen domain](https://www.kaggle.com/c/adl-final-dst-with-chit-chat-unseen-domains) (Ranked 3rd out of 22 teams)
 
+## Report
+
+https://github.com/joe0123/Dialogue-State-Tracking/blob/master/report.pdf
+
+## Presentation Video
+
+https://www.youtube.com/watch?v=NoyBT1UJ7MA&ab_channel=Bo-WeiHuang
+
+
 ## Environment
 
 Conda is required. If you haven't installed it, please refer to [documentation](https://docs.conda.io/en/latest/miniconda.html).
