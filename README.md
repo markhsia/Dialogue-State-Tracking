@@ -5,7 +5,7 @@ Final Project of Applied Deep Learning 2021 at NTU (Lectured by Yun-Nung / Vivia
 ## Task Description
 
 Extract values for each task slot from mission-oriented dialogues.
-* [Slides](https://docs.google.com/presentation/d/1vekovUzNlffmbTyM4X3auGHt2P5PKUfDV2_eea5ycAU/edit#slide=id.p)
+* [Slides for task description](https://docs.google.com/presentation/d/1vekovUzNlffmbTyM4X3auGHt2P5PKUfDV2_eea5ycAU/edit#slide=id.p)
 * [Kaggle for seen domain](https://www.kaggle.com/c/adl-final-dst-with-chit-chat-seen-domains) (Ranked 1st out of 22 teams)
 * [Kaggle for unseen domain](https://www.kaggle.com/c/adl-final-dst-with-chit-chat-unseen-domains) (Ranked 3rd out of 22 teams)
 
@@ -13,9 +13,9 @@ Extract values for each task slot from mission-oriented dialogues.
 
 https://github.com/joe0123/Dialogue-State-Tracking/blob/master/report.pdf
 
-## Presentation Video
+## Presentation Slides
 
-https://www.youtube.com/watch?v=NoyBT1UJ7MA&ab_channel=Bo-WeiHuang
+https://docs.google.com/presentation/d/102wH0nR3VlnJXKe-q3dj0A1LmvNprzFMlDjqUU_GrCI/edit#slide=id.p
 
 
 ## Environment
