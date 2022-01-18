@@ -1,6 +1,6 @@
 # Dialogue-State-Tracking
 
-Final Project of Applied Deep Learning 2021 at NTU (Lectured by Yun-Nung / Vivian, Chen)
+Final Project of [Applied Deep Learning 2021 at NTU](https://www.csie.ntu.edu.tw/~miulab/s109-adl/) (Lectured by Yun-Nung / Vivian, Chen)
 
 ## Task Description
 
