@@ -122,55 +122,55 @@ if __name__ == "__main__":
                             service_desc = noncat_descriptions[service]["service_descs"][0]
                     if args.with_labels:
                         states = states_record[service]
-                    for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
-                        if "slot_descs" in noncat_descriptions[service]:
+                    if "slot_descs" in noncat_descriptions[service]:
+                        for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
                             if random.random() < args.aug_prob:
                                 slot_desc = random.choice(noncat_descriptions[service]["slot_descs"][slot][1:])
                             else:
                                 slot_desc = noncat_descriptions[service]["slot_descs"][slot][0]
-                        if args.with_labels:
-                            values = [v.lower() for v in states.get(slot, [])]
-                            if len(values) > 0:
-                                active, start, end = 1, -1, -1
-                                if random.random() < args.shuffle_prob:
-                                    random.shuffle(values)
-                                value = values[0]
-                                slot_position = slot_positions[service][slot]
-                                for v in values:
-                                    bounds = bounds_record.get(v, [])
-                                    if len(bounds) > 0:
-                                        start, end = min(bounds, key=lambda i: (abs((i[0] + i[1]) // 2 - slot_position), i))
-                                        value = v
-                                        break
-                                    elif v == "dontcare":
-                                        start, end = slot_position, slot_position + 1
-                                        value = v
-                                        break
-                                    else:
-                                        continue
-                                
-                                if (utterances[start: end].lower() != value and "dontcare" != value):
-                                    print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, value))
-                                    if not args.keep_no_matched:
-                                        continue
-                            else:
-                                active, start, end = 0, -1, -1
-                                value = ''
-                        else:
-                            active, start, end = -1, -1, -1
-                            value = ''
+                            if args.with_labels:
+                                values = [v.lower() for v in states.get(slot, [])]
+                                if len(values) > 0:
+                                    active, start, end = 1, -1, -1
+                                    if random.random() < args.shuffle_prob:
+                                        random.shuffle(values)
+                                    value = values[0]
+                                    slot_position = slot_positions[service][slot]
+                                    for v in values:
+                                        bounds = bounds_record.get(v, [])
+                                        if len(bounds) > 0:
+                                            start, end = min(bounds, key=lambda i: (abs((i[0] + i[1]) // 2 - slot_position), i))
+                                            value = v
+                                            break
+                                        elif v == "dontcare":
+                                            start, end = slot_position, slot_position + 1
+                                            value = v
+                                            break
+                                        else:
+                                            continue
 
-                        data.append({"id": len(data),
-                                    "dial_id": dial_id,
-                                    "utterances": utterances,
-                                    "service": service,
-                                    "service_desc": service_desc,
-                                    "slot": slot,
-                                    "slot_desc": slot_desc,
-                                    "active": active,
-                                    "start": start,
-                                    "end": end,
-                                    "value": value})
+                                    if (utterances[start: end].lower() != value and "dontcare" != value):
+                                        print("Not matched: {} | {} | {} | {} | {}".format(fn, dial_id, service, slot, value))
+                                        if not args.keep_no_matched:
+                                            continue
+                                else:
+                                    active, start, end = 0, -1, -1
+                                    value = ''
+                            else:
+                                active, start, end = -1, -1, -1
+                                value = ''
+
+                            data.append({"id": len(data),
+                                        "dial_id": dial_id,
+                                        "utterances": utterances,
+                                        "service": service,
+                                        "service_desc": service_desc,
+                                        "slot": slot,
+                                        "slot_desc": slot_desc,
+                                        "active": active,
+                                        "start": start,
+                                        "end": end,
+                                        "value": value})
 
     ans_count = 0
     os.makedirs(os.path.dirname(os.path.abspath(args.out_file)), exist_ok=True)
