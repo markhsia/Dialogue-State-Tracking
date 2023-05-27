@@ -137,7 +137,8 @@ if __name__ == "__main__":
     cols = raw_datasets["train"].column_names
     args.id_col = "id"
     args.dial_id_col = "dial_id"
-    args.utter_col = "utterances"
+    #args.utter_col = "utterances"
+    args.utter_col = "utterance"
     args.service_desc_col = "service_desc"
     args.slot_desc_col = "slot_desc"
     args.active_col = "active"
