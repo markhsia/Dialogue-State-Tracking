@@ -70,10 +70,11 @@ if __name__ == "__main__":
             else:
                 noncat_descriptions[desc_map[0]]["service_descs"] = descs
         else:
-            if args.norm:
-                noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
-            else:
-                noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
+            if "slot_descs" in noncat_descriptions[desc_map[0]]:
+                if args.norm:
+                    noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = [desc.capitalize() for desc in descs]
+                else:
+                    noncat_descriptions[desc_map[0]]["slot_descs"][desc_map[1]] = descs
     
     data = []
     for dial_dir in args.dial_dirs:
@@ -122,10 +123,11 @@ if __name__ == "__main__":
                     if args.with_labels:
                         states = states_record[service]
                     for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
-                        if random.random() < args.aug_prob:
-                            slot_desc = random.choice(noncat_descriptions[service]["slot_descs"][slot][1:])
-                        else:
-                            slot_desc = noncat_descriptions[service]["slot_descs"][slot][0]
+                        if "slot_descs" in noncat_descriptions[service]:
+                            if random.random() < args.aug_prob:
+                                slot_desc = random.choice(noncat_descriptions[service]["slot_descs"][slot][1:])
+                            else:
+                                slot_desc = noncat_descriptions[service]["slot_descs"][slot][0]
                         if args.with_labels:
                             values = [v.lower() for v in states.get(slot, [])]
                             if len(values) > 0:
