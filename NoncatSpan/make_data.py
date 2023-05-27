@@ -114,10 +114,11 @@ if __name__ == "__main__":
                     utterances += utterance + ' '
                  
                 for service in services:
-                    if random.random() < args.aug_prob:
-                        service_desc = random.choice(noncat_descriptions[service]["service_descs"][1:])
-                    else:
-                        service_desc = noncat_descriptions[service]["service_descs"][0]
+                    if "service_descs" in noncat_descriptions[service]:
+                        if random.random() < args.aug_prob:
+                            service_desc = random.choice(noncat_descriptions[service]["service_descs"][1:])
+                        else:
+                            service_desc = noncat_descriptions[service]["service_descs"][0]
                     if args.with_labels:
                         states = states_record[service]
                     for slot in sorted(noncat_descriptions[service]["slot_descs"].keys()):
