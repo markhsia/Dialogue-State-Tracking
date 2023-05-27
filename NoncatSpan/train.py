@@ -36,7 +36,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--train_file", type=str, required=True)
     parser.add_argument("--valid_file", type=str)
-    #parser.add_argument("--max_seq_len", type=int, default=512)
+    parser.add_argument("--max_seq_len", type=int, default=512)
     parser.add_argument("--stride", type=int, default=256)
     parser.add_argument("--config_name", type=str)
     parser.add_argument("--tokenizer_name", type=str)
@@ -57,7 +57,7 @@ def parse_args():
     parser.add_argument("--start_n_top", type=int, default=5, help="For beam model")
     parser.add_argument("--end_n_top", type=int, default=5, help="For beam model")
     parser.add_argument("--n_best", type=int, default=20)
-    #parser.add_argument("--max_ans_len", type=int, default=30)
+    parser.add_argument("--max_ans_len", type=int, default=30)
     args = parser.parse_args()
     
     args.saved_dir = os.path.join(args.saved_dir, strftime("%m%d-%H%M", localtime()))
